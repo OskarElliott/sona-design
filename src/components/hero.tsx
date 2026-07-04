@@ -121,6 +121,15 @@ export function Hero() {
         },
       }
 
+  const line = reduced
+    ? {}
+    : {
+        variants: {
+          hidden: { y: '112%' },
+          visible: { y: '0%', transition: { duration: 0.85, ease: EASE } },
+        },
+      }
+
   return (
     <section id="hero" className="relative flex min-h-screen flex-col overflow-hidden">
       {/* One light source */}
@@ -160,16 +169,20 @@ export function Hero() {
           </span>
         </motion.p>
 
-        <motion.h1
-          {...item}
-          className="mt-6 font-display text-[2.7rem] font-semibold leading-[1.04] tracking-tight md:text-6xl lg:text-7xl"
-        >
-          <span className="text-muted">
-            Sona projektuje strony<span className="text-accent">*</span>,
+        {/* Each line rises out of an overflow mask (editorial line reveal);
+            the container stagger sequences them after the eyebrow. */}
+        <h1 className="mt-6 font-display text-[2.7rem] font-semibold leading-[1.04] tracking-tight md:text-6xl lg:text-7xl">
+          <span className="block overflow-hidden pb-[0.08em]">
+            <motion.span {...line} className="block text-muted">
+              Sona projektuje strony<span className="text-accent">*</span>,
+            </motion.span>
           </span>
-          <br />
-          przez które dzwoni telefon.
-        </motion.h1>
+          <span className="block overflow-hidden pb-[0.08em]">
+            <motion.span {...line} className="block">
+              przez które dzwoni telefon.
+            </motion.span>
+          </span>
+        </h1>
 
         <motion.p {...item} className="mt-6 text-sm text-muted">
           <span className="text-accent">*</span> od 799 PLN, płatność dopiero przy publikacji

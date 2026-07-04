@@ -1,3 +1,4 @@
+import { Contact } from '@/components/contact'
 import { Hero } from '@/components/hero'
 import { Pricing } from '@/components/pricing'
 import { Projects } from '@/components/projects'
@@ -15,8 +16,10 @@ export default function Home() {
 
       <Pricing />
 
-      {/* Kontakt (step 10) + footer land here */}
-      <div aria-hidden className="h-[30vh]" />
+      <Contact />
+
+      {/* Footer (step 11) lands here */}
+      <div aria-hidden className="h-[10vh]" />
     </main>
   )
 }

@@ -73,7 +73,7 @@ export function Comparison() {
         Porównaj pakiety
       </motion.h3>
 
-      <div className="mt-10 overflow-x-auto">
+      <div className="no-scrollbar mt-10 overflow-x-auto">
         <div className="min-w-[40rem]">
           {/* Header */}
           <motion.div
