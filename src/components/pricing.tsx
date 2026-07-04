@@ -91,7 +91,7 @@ export function Pricing() {
     <section id="ceny" className="mx-auto max-w-content px-6 py-24">
       <motion.div {...reveal()} className="mx-auto max-w-2xl text-center">
         <h2 className="font-display text-4xl font-semibold tracking-tight md:text-5xl">
-          Website Packages
+          Pakiety stron
         </h2>
         <p className="mt-4 text-muted">
           Wybierz zakres, resztą zajmę się ja. Płatność dopiero przy publikacji.
