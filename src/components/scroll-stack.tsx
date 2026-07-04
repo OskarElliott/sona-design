@@ -92,16 +92,38 @@ const ScrollStack = ({
     }
   }, [useWindowScroll])
 
-  const getElementOffset = useCallback(
+  // JITTER FIX (deviation from the reactbits source): the original window
+  // mode measured card positions via getBoundingClientRect every frame, but
+  // rect.top INCLUDES the translateY this component just applied — each
+  // frame fed its own transform back into the pin math and the cards
+  // oscillated. offsetTop chains ignore transforms, and we measure once
+  // (plus on resize) instead of every frame.
+  const cardTopsRef = useRef<number[]>([])
+  const endTopRef = useRef(0)
+
+  const getLayoutTop = useCallback(
     (element: HTMLElement) => {
       if (useWindowScroll) {
-        const rect = element.getBoundingClientRect()
-        return rect.top + window.scrollY
+        let y = 0
+        let node: HTMLElement | null = element
+        while (node) {
+          y += node.offsetTop
+          node = node.offsetParent as HTMLElement | null
+        }
+        return y
       }
       return element.offsetTop
     },
     [useWindowScroll]
   )
+
+  const measureLayout = useCallback(() => {
+    cardTopsRef.current = cardsRef.current.map(getLayoutTop)
+    const endElement = useWindowScroll
+      ? document.querySelector<HTMLElement>('.scroll-stack-end')
+      : scrollerRef.current?.querySelector<HTMLElement>('.scroll-stack-end')
+    endTopRef.current = endElement ? getLayoutTop(endElement) : 0
+  }, [getLayoutTop, useWindowScroll])
 
   const updateCardTransforms = useCallback(() => {
     if (!cardsRef.current.length || isUpdatingRef.current) return
@@ -112,16 +134,12 @@ const ScrollStack = ({
     const stackPositionPx = parsePercentage(stackPosition, containerHeight)
     const scaleEndPositionPx = parsePercentage(scaleEndPosition, containerHeight)
 
-    const endElement = useWindowScroll
-      ? document.querySelector<HTMLElement>('.scroll-stack-end')
-      : scrollerRef.current?.querySelector<HTMLElement>('.scroll-stack-end')
-
-    const endElementTop = endElement ? getElementOffset(endElement) : 0
+    const endElementTop = endTopRef.current
 
     cardsRef.current.forEach((card, i) => {
       if (!card) return
 
-      const cardTop = getElementOffset(card)
+      const cardTop = cardTopsRef.current[i] ?? 0
       const triggerStart = cardTop - stackPositionPx - itemStackDistance * i
       const triggerEnd = cardTop - scaleEndPositionPx
       const pinStart = cardTop - stackPositionPx - itemStackDistance * i
@@ -136,7 +154,7 @@ const ScrollStack = ({
       if (blurAmount) {
         let topCardIndex = 0
         for (let j = 0; j < cardsRef.current.length; j++) {
-          const jCardTop = getElementOffset(cardsRef.current[j])
+          const jCardTop = cardTopsRef.current[j] ?? 0
           const jTriggerStart = jCardTop - stackPositionPx - itemStackDistance * j
           if (scrollTop >= jTriggerStart) {
             topCardIndex = j
@@ -208,7 +226,6 @@ const ScrollStack = ({
     calculateProgress,
     parsePercentage,
     getScrollData,
-    getElementOffset,
   ])
 
   const handleScroll = useCallback(() => {
@@ -296,11 +313,25 @@ const ScrollStack = ({
       card.style.perspective = '1000px'
     })
 
+    // Measure AFTER margins are applied, and re-measure whenever layout
+    // shifts (viewport resize, fonts/media loading changing content height).
+    measureLayout()
+
+    const onLayoutChange = () => {
+      measureLayout()
+      updateCardTransforms()
+    }
+    window.addEventListener('resize', onLayoutChange)
+    const resizeObserver = new ResizeObserver(onLayoutChange)
+    resizeObserver.observe(scroller)
+
     setupLenis()
 
     updateCardTransforms()
 
     return () => {
+      window.removeEventListener('resize', onLayoutChange)
+      resizeObserver.disconnect()
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current)
       }
@@ -312,7 +343,7 @@ const ScrollStack = ({
       transformsCache.clear()
       isUpdatingRef.current = false
     }
-  }, [itemDistance, useWindowScroll, setupLenis, updateCardTransforms])
+  }, [itemDistance, useWindowScroll, setupLenis, updateCardTransforms, measureLayout])
 
   return (
     <div

@@ -1,7 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useReducedMotion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+} from 'framer-motion'
 import ScrollStack, { ScrollStackItem } from '@/components/scroll-stack'
 
 // Built for n cards (brief §3.6): add a project here and everything
@@ -89,11 +95,109 @@ function CardInner({ project, index, total }: { project: Project; index: number;
   )
 }
 
+// "kategorie" view (owner picked the adream-list direction): category name
+// top-left, hairline rows of projects (name left, tagline right), rows rest
+// in the same #999a9a as the inactive filter and ink up on hover. On
+// desktop with full motion a preview card trails the cursor on a spring;
+// touch and reduced-motion get the plain list. Rows become case-study
+// links once case studies exist.
+function CategoriesView({ showPreview }: { showPreview: boolean }) {
+  const groups = Array.from(
+    PROJECTS.reduce((map, project, index) => {
+      const list = map.get(project.category) ?? []
+      list.push({ project, index })
+      map.set(project.category, list)
+      return map
+    }, new Map<string, { project: Project; index: number }[]>())
+  )
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [hovered, setHovered] = useState<number | null>(null)
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+  const previewX = useSpring(x, { stiffness: 260, damping: 28 })
+  const previewY = useSpring(y, { stiffness: 260, damping: 28 })
+
+  function onMouseMove(e: React.MouseEvent) {
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (!rect) return
+    x.set(e.clientX - rect.left)
+    y.set(e.clientY - rect.top)
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative"
+      onMouseMove={showPreview ? onMouseMove : undefined}
+      onMouseLeave={() => setHovered(null)}
+    >
+      {groups.map(([category, items]) => (
+        <div key={category} className="mt-14 first:mt-0">
+          <h3 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
+            {category}
+          </h3>
+          <ul className="mt-6 border-t border-line">
+            {items.map(({ project, index }) => (
+              <li key={project.name} className="border-b border-line">
+                <div
+                  className="flex flex-col gap-1 py-5 text-[#999a9a] transition-colors duration-200 hover:text-ink motion-reduce:transition-none md:flex-row md:items-baseline md:justify-between md:gap-8"
+                  onMouseEnter={() => setHovered(index)}
+                  onMouseLeave={() => setHovered((h) => (h === index ? null : h))}
+                >
+                  <p className="font-display text-xl font-medium tracking-tight md:text-2xl">
+                    {project.name}
+                  </p>
+                  <p className="text-sm md:text-right">{project.tagline}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      {showPreview && (
+        <AnimatePresence>
+          {hovered !== null && (
+            <motion.div
+              className="pointer-events-none absolute z-20 hidden md:block"
+              style={{ left: previewX, top: previewY, x: '-50%', y: '-60%' }}
+              initial={{ opacity: 0, scale: 0.92 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+            >
+              <div className="relative aspect-[16/10] w-72 overflow-hidden rounded-card border border-line bg-accent-soft/60 shadow-island">
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      'radial-gradient(110% 110% at 25% 0%, rgb(var(--accent) / 0.16), transparent 55%)',
+                  }}
+                />
+                <p className="absolute left-4 top-4 font-mono text-[10px] uppercase tracking-widest text-muted">
+                  zrzut ekranu wkrótce
+                </p>
+                <span
+                  aria-hidden
+                  className="absolute -bottom-4 right-2 font-display text-7xl font-black leading-none text-accent/15"
+                >
+                  {hovered + 1}
+                </span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
+    </div>
+  )
+}
+
 // "wszystkie / kategorie" header: active is ink, inactive is a fixed light
 // grey (#999a9a per owner spec, readable in both themes; #f7f7f7 would
 // vanish on light paper). Hover previews the active colour. Count sits
-// superscript top-right. Clicking only switches the active state for now:
-// the category view itself is not designed yet.
+// superscript top-right. "wszystkie" shows the deck, "kategorie" the
+// grouped list view.
 function FilterButton({
   label,
   count,
@@ -156,7 +260,9 @@ export function Projects() {
       </div>
 
       <div className="mx-auto mt-10 max-w-4xl md:mt-16">
-        {stack ? (
+        {filter === 'kategorie' ? (
+          <CategoriesView showPreview={stack} />
+        ) : stack ? (
           <ScrollStack
             useWindowScroll
             itemDistance={120}
