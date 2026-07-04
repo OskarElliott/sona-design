@@ -102,15 +102,26 @@ export function Navbar() {
           Sona<span className="text-accent">.</span>
         </a>
 
-        {/* Desktop links */}
+        {/* Desktop links. Hover rolls the label upward while its duplicate
+            rises from below (reduced motion: plain colour change only). */}
         <div className="hidden items-center gap-1 md:flex">
           {LINKS.map((l) => (
             <a
               key={l.href}
               href={l.href}
-              className="rounded-pill px-3.5 py-2 text-sm text-muted transition-colors hover:bg-accent-soft/60 hover:text-ink motion-reduce:transition-none"
+              className="group rounded-pill px-3.5 py-2 text-sm text-muted transition-colors hover:bg-accent-soft/60 hover:text-ink motion-reduce:transition-none"
             >
-              {l.label}
+              <span className="relative block overflow-hidden">
+                <span className="block transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-full motion-reduce:transition-none motion-reduce:group-hover:translate-y-0">
+                  {l.label}
+                </span>
+                <span
+                  aria-hidden
+                  className="absolute left-0 top-full block transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-full motion-reduce:hidden"
+                >
+                  {l.label}
+                </span>
+              </span>
             </a>
           ))}
         </div>

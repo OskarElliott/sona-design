@@ -1,21 +1,17 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-  type MotionValue,
-} from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { useReducedMotion } from 'framer-motion'
+import ScrollStack, { ScrollStackItem } from '@/components/scroll-stack'
 
 // Built for n cards (brief §3.6): add a project here and everything
-// (stack math, offsets, numbering) adapts. PlumbingCraft becomes #3 soon.
+// (stack, numbering, filter counts) adapts. PlumbingCraft becomes #3 soon.
 // Names/descriptions/screenshots below are placeholders awaiting real data.
 type Project = {
   name: string
   tagline: string
   description: string
+  category: string
   tags: string[]
 }
 
@@ -25,6 +21,7 @@ const PROJECTS: Project[] = [
     tagline: 'Strona dla lokalnej firmy usługowej',
     description:
       'Krótki opis projektu: jaki był problem, co powstało i co się poprawiło. Ta karta czeka na prawdziwe dane.',
+    category: 'Strona wizytówka',
     tags: ['Strona wizytówka', 'Darmowa wycena', 'SEO lokalne'],
   },
   {
@@ -32,32 +29,19 @@ const PROJECTS: Project[] = [
     tagline: 'Strona dla warsztatu / punktu usługowego',
     description:
       'Drugi projekt na start. Tu też wejdzie prawdziwa nazwa, opis efektu i zrzut ekranu z wdrożenia.',
+    category: 'Landing page',
     tags: ['Landing page', 'Rezerwacje', 'Google Maps'],
   },
 ]
 
-function ProjectCard({
-  project,
-  index,
-  total,
-  progress,
-  stack,
-}: {
-  project: Project
-  index: number
-  total: number
-  progress: MotionValue<number>
-  stack: boolean
-}) {
-  // Cards deeper in the deck shrink slightly as they are covered.
-  const targetScale = 1 - (total - 1 - index) * 0.05
-  const scale = useTransform(progress, [index / total, 1], [1, targetScale])
+const CATEGORY_COUNT = new Set(PROJECTS.map((p) => p.category)).size
 
-  const card = (
-    <motion.article
-      style={stack ? { scale } : undefined}
-      className="grid w-full overflow-hidden rounded-card-lg border border-line bg-paper shadow-island md:grid-cols-2"
-    >
+const CARD_CLASSES =
+  'grid overflow-hidden rounded-card-lg border border-line bg-paper shadow-island md:grid-cols-2'
+
+function CardInner({ project, index, total }: { project: Project; index: number; total: number }) {
+  return (
+    <>
       {/* Media placeholder until real screenshots land */}
       <div className="relative aspect-[16/10] overflow-hidden bg-accent-soft/50 md:aspect-auto md:min-h-[24rem]">
         <div
@@ -101,31 +85,48 @@ function ProjectCard({
           case study wkrótce
         </p>
       </div>
-    </motion.article>
+    </>
   )
+}
 
-  if (!stack) {
-    // Fallback (brief §4): plain vertical list on mobile and reduced motion.
-    return <div className="mt-8 first:mt-0">{card}</div>
-  }
-
+// "wszystkie / kategorie" header: active is ink, inactive is a fixed light
+// grey (#999a9a per owner spec, readable in both themes; #f7f7f7 would
+// vanish on light paper). Hover previews the active colour. Count sits
+// superscript top-right. Clicking only switches the active state for now:
+// the category view itself is not designed yet.
+function FilterButton({
+  label,
+  count,
+  active,
+  onClick,
+}: {
+  label: string
+  count: number
+  active: boolean
+  onClick: () => void
+}) {
   return (
-    <div
-      className="sticky flex h-screen items-center justify-center"
-      style={{ top: index * 24 }}
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`group inline-flex items-start gap-1.5 rounded-pill font-display text-3xl font-semibold tracking-tight transition-colors duration-200 hover:text-ink motion-reduce:transition-none md:text-4xl ${
+        active ? 'text-ink' : 'text-[#999a9a]'
+      }`}
     >
-      {card}
-    </div>
+      <span>{label}</span>
+      <span className="mt-1 font-mono text-xs font-normal leading-none md:text-sm">{count}</span>
+    </button>
   )
 }
 
 export function Projects() {
-  const container = useRef<HTMLDivElement>(null)
   const reduced = useReducedMotion()
+  const [filter, setFilter] = useState<'wszystkie' | 'kategorie'>('wszystkie')
 
-  // Stack only on md+ pointers-and-viewports; phones get the plain list
-  // (no scroll-jacking on phones, brief §4). Starts false so SSR and the
-  // first client paint agree, then upgrades after mount.
+  // Stack only on md+ viewports; phones get the plain list (no
+  // scroll-jacking on phones, brief §4 — reactbits ships no fallback, so
+  // this gate wraps it). Starts false so SSR and first paint agree.
   const [isDesktop, setIsDesktop] = useState(false)
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 768px)')
@@ -137,35 +138,47 @@ export function Projects() {
 
   const stack = isDesktop && !reduced
 
-  // ONE scroll source: Framer reads native scroll. No Lenis (brief §4).
-  const { scrollYProgress } = useScroll({
-    target: container,
-    offset: ['start start', 'end end'],
-  })
-
   return (
     <section id="projekty" className="mx-auto max-w-content px-6 py-24">
-      <div className="mx-auto max-w-4xl">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">Realizacje</p>
-        <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">
-          Ostatnie projekty
-        </h2>
-        <p className="mt-4 max-w-xl text-muted">
-          Dwa wdrożenia na start, trzecie w drodze. Każde z myślą o jednym: żeby dzwonił telefon.
-        </p>
+      <div className="flex items-start justify-center gap-8 md:gap-12">
+        <FilterButton
+          label="wszystkie"
+          count={PROJECTS.length}
+          active={filter === 'wszystkie'}
+          onClick={() => setFilter('wszystkie')}
+        />
+        <FilterButton
+          label="kategorie"
+          count={CATEGORY_COUNT}
+          active={filter === 'kategorie'}
+          onClick={() => setFilter('kategorie')}
+        />
       </div>
 
-      <div ref={container} className="mx-auto mt-4 max-w-4xl md:mt-10">
-        {PROJECTS.map((p, i) => (
-          <ProjectCard
-            key={p.name}
-            project={p}
-            index={i}
-            total={PROJECTS.length}
-            progress={scrollYProgress}
-            stack={stack}
-          />
-        ))}
+      <div className="mx-auto mt-10 max-w-4xl md:mt-16">
+        {stack ? (
+          <ScrollStack
+            useWindowScroll
+            itemDistance={120}
+            itemScale={0.03}
+            itemStackDistance={24}
+            stackPosition="15%"
+            scaleEndPosition="8%"
+            baseScale={0.92}
+          >
+            {PROJECTS.map((p, i) => (
+              <ScrollStackItem key={p.name} itemClassName={CARD_CLASSES}>
+                <CardInner project={p} index={i} total={PROJECTS.length} />
+              </ScrollStackItem>
+            ))}
+          </ScrollStack>
+        ) : (
+          PROJECTS.map((p, i) => (
+            <article key={p.name} className={`${CARD_CLASSES} mt-8 first:mt-0`}>
+              <CardInner project={p} index={i} total={PROJECTS.length} />
+            </article>
+          ))
+        )}
       </div>
     </section>
   )
