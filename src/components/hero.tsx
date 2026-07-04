@@ -151,7 +151,7 @@ export function Hero() {
             should feel like a friendly person talking). Ink text per owner. */}
         <motion.p
           {...item}
-          className="eyebrow-group inline-flex w-fit items-center gap-2.5 rounded-2xl rounded-bl-md border border-line bg-accent-soft/50 px-4 py-2 text-base text-ink"
+          className="eyebrow-group inline-flex w-fit items-center gap-2.5 rounded-2xl rounded-bl-md border border-accent/20 bg-accent-soft/50 px-4 py-2 text-base text-ink"
         >
           <span aria-hidden className="h-1.5 w-1.5 rounded-pill bg-accent" />
           Cześć, tu Sona{' '}
@@ -184,7 +184,7 @@ export function Hero() {
           </a>
           {/* Underline appears on hover only (owner), drawn left to right. */}
           <a href="#projekty" className="group relative pb-1 text-sm font-medium">
-            Zobacz realizacje
+            Zobacz projekty
             <span
               aria-hidden
               className="absolute bottom-0 left-0 h-[1.5px] w-full origin-left scale-x-0 bg-ink transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none"
