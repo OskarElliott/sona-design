@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import { Navbar } from '@/components/navbar'
 import { ThemeProvider } from '@/components/theme-provider'
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from '@/lib/site'
 import './globals.css'
 
 // Display — Overused Grotesk variable (300–900). ALPHA font: Polish
@@ -33,9 +34,58 @@ const mono = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'Sona — Strony internetowe dla lokalnych firm',
-  description:
-    'Warm, premium strony internetowe dla lokalnych firm. Więcej telefonów, więcej zleceń.',
+  metadataBase: new URL(SITE_URL),
+  title: { default: SITE_TITLE, template: `%s · ${SITE_NAME}` },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    'strony internetowe',
+    'strona internetowa dla firmy',
+    'strona dla hydraulika',
+    'strona dla elektryka',
+    'strona dla warsztatu',
+    'tworzenie stron internetowych',
+    'strona wizytówka',
+    'strona internetowa cena',
+  ],
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    locale: 'pl_PL',
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  robots: { index: true, follow: true },
+}
+
+// LocalBusiness schema: tells Google this is a Polish web studio with
+// visible fixed-from prices. Offer data mirrors pricing.tsx; update both
+// together when real rates land.
+const BUSINESS_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: SITE_NAME,
+  description: SITE_DESCRIPTION,
+  url: SITE_URL,
+  priceRange: 'od 799 PLN',
+  areaServed: { '@type': 'Country', name: 'Polska' },
+  knowsLanguage: 'pl',
+  makesOffer: [
+    { name: 'Start', price: '799', priceCurrency: 'PLN' },
+    { name: 'Firma', price: '1099', priceCurrency: 'PLN' },
+    { name: 'Premium', price: '1999', priceCurrency: 'PLN' },
+  ].map((offer) => ({
+    '@type': 'Offer',
+    name: `Pakiet ${offer.name}`,
+    price: offer.price,
+    priceCurrency: offer.priceCurrency,
+  })),
 }
 
 export default function RootLayout({
@@ -52,6 +102,10 @@ export default function RootLayout({
       className={`${display.variable} ${body.variable} ${mono.variable}`}
     >
       <body className="font-sans">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(BUSINESS_JSON_LD) }}
+        />
         <ThemeProvider>
           <Navbar />
           {children}
