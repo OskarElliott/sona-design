@@ -107,7 +107,7 @@ export function Pricing() {
             className={`relative flex flex-col rounded-card-lg p-8 ${
               tier.featured
                 ? 'bg-ink text-paper shadow-island'
-                : 'border border-line bg-paper'
+                : 'border border-line bg-paper dark:bg-white/[0.02]'
             }`}
           >
             {tier.featured && (
@@ -119,16 +119,16 @@ export function Pricing() {
             <h3 className="font-display text-lg font-medium tracking-tight">{tier.name}</h3>
 
             <p className="mt-4 font-display text-5xl font-semibold tracking-tight">
-              <span className={`mr-1.5 align-middle text-base font-normal ${tier.featured ? 'text-paper/50' : 'text-muted'}`}>
+              <span className={`mr-1.5 align-middle text-base font-normal ${tier.featured ? 'text-paper/60' : 'text-muted'}`}>
                 od
               </span>
               {tier.price}
-              <span className={`ml-1.5 text-lg font-medium ${tier.featured ? 'text-paper/50' : 'text-muted'}`}>
+              <span className={`ml-1.5 text-lg font-medium ${tier.featured ? 'text-paper/60' : 'text-muted'}`}>
                 PLN
               </span>
             </p>
 
-            <p className={`mt-4 text-sm leading-relaxed ${tier.featured ? 'text-paper/60' : 'text-muted'}`}>
+            <p className={`mt-4 text-sm leading-relaxed ${tier.featured ? 'text-paper/70' : 'text-muted'}`}>
               {tier.blurb}
             </p>
 

@@ -14,7 +14,27 @@ import { SITE_EMAIL } from '@/lib/site'
 // like PlumbingCraft.
 
 const INPUT_CLASSES =
-  'w-full rounded-card border border-line bg-transparent px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted/60 focus:border-accent motion-reduce:transition-none'
+  'w-full rounded-card border border-line bg-transparent px-4 py-3 text-sm outline-none transition-colors focus:border-accent motion-reduce:transition-none'
+
+// Native validation bubbles follow the BROWSER language, not the page's
+// lang="pl" — so we set Polish messages ourselves. When the English
+// version lands, these strings move into the translation layer.
+type FieldEl = HTMLInputElement | HTMLTextAreaElement
+function setPolishValidity(el: FieldEl) {
+  if (el.validity.valueMissing) {
+    el.setCustomValidity(
+      el.type === 'checkbox' ? 'Zaznacz zgodę, żebym mógł odpowiedzieć.' : 'Uzupełnij to pole.'
+    )
+  } else if (el.validity.typeMismatch) {
+    el.setCustomValidity('Podaj poprawny adres e-mail.')
+  } else {
+    el.setCustomValidity('')
+  }
+}
+const validityProps = {
+  onInvalid: (e: React.FormEvent<FieldEl>) => setPolishValidity(e.currentTarget),
+  onInput: (e: React.FormEvent<FieldEl>) => e.currentTarget.setCustomValidity(''),
+}
 
 function FieldLabel({
   htmlFor,
@@ -108,8 +128,8 @@ export function Contact() {
                 name="name"
                 required
                 autoComplete="name"
-                placeholder="Jan Kowalski"
                 className={INPUT_CLASSES}
+                {...validityProps}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -122,8 +142,8 @@ export function Contact() {
                 type="email"
                 required
                 autoComplete="email"
-                placeholder="jan@firma.pl"
                 className={INPUT_CLASSES}
+                {...validityProps}
               />
             </div>
           </div>
@@ -137,7 +157,6 @@ export function Contact() {
               name="phone"
               type="tel"
               autoComplete="tel"
-              placeholder="600 000 000"
               className={INPUT_CLASSES}
             />
           </div>
@@ -151,8 +170,8 @@ export function Contact() {
               name="message"
               required
               rows={5}
-              placeholder="Opowiedz krótko o swojej firmie i czego potrzebuje Twoja strona."
               className={`${INPUT_CLASSES} resize-none`}
+              {...validityProps}
             />
           </div>
 
@@ -162,6 +181,7 @@ export function Contact() {
               name="consent"
               required
               className="mt-0.5 h-4 w-4 shrink-0 accent-[#E5322B]"
+              {...validityProps}
             />
             Wyrażam zgodę na przetwarzanie moich danych w celu odpowiedzi na wiadomość.
           </label>
