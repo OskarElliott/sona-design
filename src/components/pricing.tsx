@@ -1,76 +1,73 @@
+'use client'
+
+import { motion, useReducedMotion } from 'framer-motion'
+import { Comparison } from '@/components/comparison'
 import { Faq } from '@/components/faq'
 
-// Ceny (brief §3.9) — "this is the whole edge. Never contact-for-quote."
-// Three transparent tiers, middle one anchored as the default choice.
-// PRICES ARE PLACEHOLDERS pending owner's real rates; the floor (od 1499 zł)
-// comes from the brief's hero chip.
+// Ceny, v2 (owner feedback): minimal and motion-first. Prices set in the
+// display face, no large mono blocks. Firma is the anchored default.
+// PRICES still placeholders until owner confirms final rates.
 type Tier = {
   name: string
-  price: string
-  audience: string
+  price: number
+  blurb: string
   features: string[]
-  timeline: string
   featured?: boolean
 }
 
 const TIERS: Tier[] = [
   {
-    name: 'Wizytówka',
-    price: 'od 1499 zł',
-    audience: 'Prosta strona, która robi dobre pierwsze wrażenie i zbiera telefony.',
+    name: 'Start',
+    price: 799,
+    blurb: 'Solidna strona na dobry początek. Wszystko, czego potrzebuje lokalna firma, żeby być znajdowaną.',
     features: [
-      'Strona typu one page',
+      'Do 4 podstron',
+      'Projekt dopasowany do firmy',
       'Wersja mobilna',
       'Formularz kontaktowy',
-      'Mapa dojazdu i dane firmy',
       'Podstawowe SEO lokalne',
     ],
-    timeline: 'ok. 7 dni',
   },
   {
-    name: 'Strona z ofertą',
-    price: 'od 2499 zł',
-    audience: 'Dla firm, które chcą pokazać pełną ofertę i wyprzedzić konkurencję.',
+    name: 'Firma',
+    price: 1099,
+    blurb: 'Pełna prezentacja oferty dla firmy, która chce być wybierana, nie tylko znajdowana.',
     features: [
-      'Do 5 podstron',
+      'Do 8 podstron',
       'Prezentacja usług i realizacji',
       'Opinie klientów z Google',
       'Rozszerzone SEO lokalne',
       'Statystyki odwiedzin',
     ],
-    timeline: 'ok. 14 dni',
     featured: true,
   },
   {
-    name: 'Na miarę',
-    price: 'od 3900 zł',
-    audience: 'Rezerwacje, wycena online, coś nietypowego. Zakres ustalamy razem.',
+    name: 'Premium',
+    price: 1999,
+    blurb: 'Rozbudowana strona z funkcjami na miarę i pierwszeństwem w kolejce.',
     features: [
-      'Wszystko ze Strony z ofertą',
-      'Funkcje na zamówienie',
-      'Integracje: kalendarz, płatności',
-      'Priorytetowy kontakt',
-      'Jedna konkretna cena przed startem',
+      '9 i więcej podstron',
+      'Priorytetowa realizacja',
+      'Integracje: kalendarz, rezerwacje, płatności',
+      'Pełne SEO lokalne',
+      'Opieka po publikacji',
     ],
-    timeline: 'termin przed startem',
   },
 ]
 
-const TRUST_POINTS = ['0 zł zaliczki', 'Płatność przy publikacji', 'Cena znana przed startem']
-
-function CheckIcon() {
+function CheckIcon({ className = 'text-accent' }: { className?: string }) {
   return (
     <svg
-      width="14"
-      height="14"
+      width="13"
+      height="13"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="3"
+      strokeWidth="2.5"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
-      className="mt-1 shrink-0 text-accent"
+      className={`mt-1.5 shrink-0 ${className}`}
     >
       <path d="M4 12.5 10 18 20 6" />
     </svg>
@@ -78,49 +75,64 @@ function CheckIcon() {
 }
 
 export function Pricing() {
+  const reduced = useReducedMotion()
+
+  const reveal = (delay = 0) =>
+    reduced
+      ? {}
+      : {
+          initial: { opacity: 0, y: 28 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, margin: '-60px' },
+          transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] as const },
+        }
+
   return (
     <section id="ceny" className="mx-auto max-w-content px-6 py-24">
-      <div className="mx-auto max-w-2xl text-center">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">Cennik</p>
-        <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">
-          Jasne ceny, zero niespodzianek
+      <motion.div {...reveal()} className="mx-auto max-w-2xl text-center">
+        <h2 className="font-display text-4xl font-semibold tracking-tight md:text-5xl">
+          Website Packages
         </h2>
         <p className="mt-4 text-muted">
-          Dokładnie wiesz, za co płacisz i kiedy. Projekt powstaje najpierw, płatność następuje
-          przy publikacji.
+          Wybierz zakres, resztą zajmę się ja. Płatność dopiero przy publikacji.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="mx-auto mt-14 grid max-w-5xl gap-6 md:grid-cols-3 md:items-stretch">
-        {TIERS.map((tier) => (
-          <article
+      <div className="mx-auto mt-16 grid max-w-5xl gap-5 md:grid-cols-3 md:items-stretch">
+        {TIERS.map((tier, i) => (
+          <motion.article
             key={tier.name}
-            className={`relative flex flex-col rounded-card-lg border bg-paper p-7 ${
+            {...reveal(i * 0.1)}
+            whileHover={reduced ? undefined : { y: -6 }}
+            className={`relative flex flex-col rounded-card-lg p-8 ${
               tier.featured
-                ? 'border-accent shadow-island md:-translate-y-3'
-                : 'border-line'
+                ? 'bg-ink text-paper shadow-island'
+                : 'border border-line bg-paper'
             }`}
           >
             {tier.featured && (
-              <p className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-pill bg-accent px-4 py-1.5 font-mono text-[10px] uppercase tracking-widest text-white">
-                najczęściej wybierana
+              <p className="absolute -top-3 left-8 rounded-pill bg-accent px-3.5 py-1 text-[11px] font-medium uppercase tracking-wider text-white">
+                najczęściej wybierany
               </p>
             )}
 
-            <h3 className="font-display text-2xl font-semibold tracking-tight">{tier.name}</h3>
-            <p className="mt-2 min-h-[3.5rem] text-sm leading-relaxed text-muted">
-              {tier.audience}
+            <h3 className="font-display text-lg font-medium tracking-tight">{tier.name}</h3>
+
+            <p className="mt-4 font-display text-5xl font-semibold tracking-tight">
+              <span className={`mr-1.5 align-middle text-base font-normal ${tier.featured ? 'text-paper/50' : 'text-muted'}`}>
+                od
+              </span>
+              {tier.price}
+              <span className={`ml-1.5 text-lg font-medium ${tier.featured ? 'text-paper/50' : 'text-muted'}`}>
+                PLN
+              </span>
             </p>
 
-            <p className="mt-5 font-mono text-3xl tracking-tight">
-              {tier.price.split(' ')[0]}{' '}
-              <span className="font-medium">{tier.price.split(' ').slice(1).join(' ')}</span>
-            </p>
-            <p className="mt-1.5 font-mono text-xs uppercase tracking-widest text-muted">
-              {tier.timeline}
+            <p className={`mt-4 text-sm leading-relaxed ${tier.featured ? 'text-paper/60' : 'text-muted'}`}>
+              {tier.blurb}
             </p>
 
-            <ul className="mt-6 flex flex-col gap-2.5 border-t border-line pt-6 text-sm">
+            <ul className={`mt-7 flex flex-col gap-2.5 border-t pt-7 text-sm ${tier.featured ? 'border-paper/15' : 'border-line'}`}>
               {tier.features.map((f) => (
                 <li key={f} className="flex gap-2.5">
                   <CheckIcon />
@@ -131,7 +143,7 @@ export function Pricing() {
 
             <a
               href="#kontakt"
-              className={`mt-8 block rounded-pill px-5 py-3 text-center text-sm font-medium transition-colors motion-reduce:transition-none ${
+              className={`mt-9 block rounded-pill px-5 py-3 text-center text-sm font-medium transition-colors motion-reduce:transition-none ${
                 tier.featured
                   ? 'bg-accent text-white hover:opacity-90'
                   : 'border border-line hover:border-accent hover:text-accent'
@@ -139,22 +151,11 @@ export function Pricing() {
             >
               Darmowa wycena
             </a>
-          </article>
+          </motion.article>
         ))}
       </div>
 
-      <ul className="mx-auto mt-10 flex max-w-3xl flex-wrap items-center justify-center gap-x-8 gap-y-3">
-        {TRUST_POINTS.map((point) => (
-          <li
-            key={point}
-            className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted"
-          >
-            <span aria-hidden className="h-1.5 w-1.5 rounded-pill bg-accent" />
-            {point}
-          </li>
-        ))}
-      </ul>
-
+      <Comparison />
       <Faq />
     </section>
   )
