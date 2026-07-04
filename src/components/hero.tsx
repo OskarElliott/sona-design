@@ -147,7 +147,12 @@ export function Hero() {
         style={reduced ? undefined : { opacity: contentOpacity, y: contentY }}
         className="relative mx-auto flex w-full max-w-content flex-1 flex-col justify-center px-6 pt-28"
       >
-        <motion.p {...item} className="eyebrow-group flex items-center gap-2.5 text-sm text-muted">
+        {/* The one shape in the hero: a speech bubble (brief §1, the page
+            should feel like a friendly person talking). Ink text per owner. */}
+        <motion.p
+          {...item}
+          className="eyebrow-group inline-flex w-fit items-center gap-2.5 rounded-2xl rounded-bl-md border border-line bg-accent-soft/50 px-4 py-2 text-base text-ink"
+        >
           <span aria-hidden className="h-1.5 w-1.5 rounded-pill bg-accent" />
           Cześć, tu Sona{' '}
           <span role="img" aria-label="pozdrowienie" className="wave-hand">
@@ -159,7 +164,7 @@ export function Hero() {
           {...item}
           className="mt-6 font-display text-[2.7rem] font-semibold leading-[1.04] tracking-tight md:text-6xl lg:text-7xl"
         >
-          <span className="text-ink/35">
+          <span className="text-muted">
             Sona projektuje strony<span className="text-accent">*</span>,
           </span>
           <br />
@@ -177,31 +182,14 @@ export function Hero() {
           >
             Darmowa wycena
           </a>
-          <motion.a
-            href="#projekty"
-            initial={reduced ? undefined : 'hidden'}
-            animate={reduced ? undefined : 'visible'}
-            whileHover={reduced ? undefined : 'hover'}
-            className="relative pb-1 text-sm font-medium"
-          >
+          {/* Underline appears on hover only (owner), drawn left to right. */}
+          <a href="#projekty" className="group relative pb-1 text-sm font-medium">
             Zobacz realizacje
-            <motion.span
+            <span
               aria-hidden
-              className="absolute bottom-0 left-0 h-[1.5px] w-full origin-left bg-ink"
-              variants={
-                reduced
-                  ? undefined
-                  : {
-                      hidden: { scaleX: 0 },
-                      visible: {
-                        scaleX: 1,
-                        transition: { delay: 1.5, duration: 0.6, ease: EASE },
-                      },
-                      hover: { scaleX: [0, 1], transition: { duration: 0.45, ease: EASE } },
-                    }
-              }
+              className="absolute bottom-0 left-0 h-[1.5px] w-full origin-left scale-x-0 bg-ink transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none"
             />
-          </motion.a>
+          </a>
         </motion.div>
       </motion.div>
 
