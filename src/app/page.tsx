@@ -1,3 +1,4 @@
+import { Hero } from '@/components/hero'
 import { Pricing } from '@/components/pricing'
 import { Projects } from '@/components/projects'
 
@@ -5,14 +6,7 @@ import { Projects } from '@/components/projects'
 export default function Home() {
   return (
     <main>
-      {/* Hero — deliberately empty. Owner designs it after reviewing the
-          components (brief §2 has the target layout). The marker text is
-          scaffold, not design; delete freely. */}
-      <section id="hero" className="flex min-h-screen items-center justify-center">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
-          hero wkrótce
-        </p>
-      </section>
+      <Hero />
 
       <Projects />
 
