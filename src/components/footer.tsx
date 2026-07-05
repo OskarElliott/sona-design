@@ -54,7 +54,7 @@ export function Footer() {
             >
               Darmowa wycena
             </a>
-            <p className="mt-4 text-sm text-paper/60">★ 5.0 w Google · realne projekty</p>
+            <p className="mt-4 text-sm text-paper/60">Bez zaliczek. Płatność przy publikacji.</p>
           </div>
 
           <nav aria-label="Stopka">

@@ -74,7 +74,6 @@ const BUSINESS_JSON_LD = {
   description: SITE_DESCRIPTION,
   url: SITE_URL,
   priceRange: 'od 799 PLN',
-  founder: { '@type': 'Person', name: 'Oskar' },
   areaServed: { '@type': 'Country', name: 'Polska' },
   knowsLanguage: 'pl',
   makesOffer: [

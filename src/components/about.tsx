@@ -1,109 +1,110 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion'
 
-// O mnie (step 7), no-photo version: the trust signal is the conversation
-// itself. The site's speech-bubble geometry (brief §1) plays at full scale:
-// a chat thread that assembles as you scroll, the Google review arrives as
-// a client reply, and a typing indicator leaves the thread open for the
-// visitor. REVIEW TEXT IS A PLACEHOLDER awaiting the real Google opinion;
-// no Review JSON-LD until it is real (fake structured reviews get sites
-// penalized).
+// O mnie v2 (owner redraft): no name, no photo, no invented reviews.
+// MadeByShape pattern: a scroll-driven manifesto (each word inks up from
+// faint as the visitor scrolls through it, reactbits ScrollReveal style,
+// built natively on our scroll system) followed by a stat row. The words
+// ARE the section: motion design as the trust signal.
 
-const FACTS = [
-  'Jedna osoba, zero pośredników',
-  'Projekt, kod i wdrożenie w jednych rękach',
-  'Kontakt zawsze bezpośredni',
+const SEGMENTS: { text: string; accent?: boolean }[] = [
+  { text: 'Sona to studio jednej osoby. Projekt, kod i wdrożenie w jednych rękach. Bez pośredników i bez tłumaczenia niczego dwa razy. Robię mniej projektów naraz, więc Twój dostaje ' },
+  { text: 'całą uwagę.', accent: true },
 ]
 
-const SONA_BUBBLE =
-  'max-w-[85%] rounded-2xl rounded-bl-md border border-accent/20 bg-accent-soft/50 px-5 py-3.5 text-sm leading-relaxed'
-const CLIENT_BUBBLE =
-  'ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-ink px-5 py-3.5 text-sm leading-relaxed text-paper'
+const STATS = [
+  { value: '1', label: 'osoba, z którą rozmawiasz od początku do końca' },
+  { value: '100%', label: 'uwagi dla Twojego projektu, nie dla kolejki zadań' },
+  { value: '0', label: 'pośredników, podwykonawców i niespodzianek' },
+]
+
+function Word({
+  children,
+  progress,
+  range,
+  accent,
+}: {
+  children: string
+  progress: MotionValue<number>
+  range: [number, number]
+  accent?: boolean
+}) {
+  const opacity = useTransform(progress, range, [0.12, 1])
+  return (
+    <span className="relative mr-[0.28em] inline-block">
+      <motion.span style={{ opacity }} className={accent ? 'text-accent' : undefined}>
+        {children}
+      </motion.span>
+    </span>
+  )
+}
 
 export function About() {
   const reduced = useReducedMotion()
+  const manifestoRef = useRef<HTMLParagraphElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: manifestoRef,
+    offset: ['start 0.85', 'end 0.5'],
+  })
 
-  const pop = (delay = 0, fromRight = false) =>
+  const words = SEGMENTS.flatMap((seg) =>
+    seg.text
+      .split(' ')
+      .filter(Boolean)
+      .map((word) => ({ word, accent: seg.accent }))
+  )
+
+  const reveal = (delay = 0) =>
     reduced
       ? {}
       : {
-          initial: { opacity: 0, y: 18, scale: 0.94, originX: fromRight ? 1 : 0, originY: 1 },
-          whileInView: { opacity: 1, y: 0, scale: 1 },
-          viewport: { once: true, margin: '-80px' },
-          transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] as const },
+          initial: { opacity: 0, y: 22 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, margin: '-60px' },
+          transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] as const },
         }
 
   return (
-    <section id="o-mnie" className="mx-auto max-w-content px-6 py-24">
-      <div className="grid gap-12 lg:grid-cols-[1fr,1.2fr] lg:gap-20">
-        <motion.div {...pop()} className="lg:sticky lg:top-32 lg:self-start">
-          <p className="flex items-center gap-2 text-sm text-muted">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-pill bg-accent" />
-            O mnie
-          </p>
-          <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight md:text-5xl">
-            Sona to ja.
-          </h2>
-          <p className="mt-5 max-w-md leading-relaxed text-muted">
-            Oskar. Projektuję, koduję i wdrażam strony internetowe dla lokalnych firm.
-            Osobiście, od pierwszej rozmowy do publikacji.
-          </p>
-          <ul className="mt-8 flex flex-col gap-3">
-            {FACTS.map((fact) => (
-              <li key={fact} className="flex items-center gap-2.5 text-sm">
-                <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-pill bg-accent" />
-                {fact}
-              </li>
+    <section id="o-mnie" className="mx-auto max-w-content px-6 py-28">
+      <motion.p {...reveal()} className="flex items-center gap-2 text-sm text-muted">
+        <span aria-hidden className="h-1.5 w-1.5 rounded-pill bg-accent" />
+        O mnie
+      </motion.p>
+
+      {/* Scroll-driven word reveal; reduced motion gets the plain paragraph */}
+      <p
+        ref={manifestoRef}
+        className="mt-8 max-w-4xl font-display text-3xl font-semibold leading-[1.15] tracking-tight md:text-5xl"
+      >
+        {reduced
+          ? SEGMENTS.map((seg, i) => (
+              <span key={i} className={seg.accent ? 'text-accent' : undefined}>
+                {seg.text}
+              </span>
+            ))
+          : words.map((w, i) => (
+              <Word
+                key={i}
+                progress={scrollYProgress}
+                range={[i / words.length, Math.min(1, (i + 1.5) / words.length)]}
+                accent={w.accent}
+              >
+                {w.word}
+              </Word>
             ))}
-          </ul>
-          <p className="mt-8 text-sm text-muted">★ 5.0 w Google</p>
-        </motion.div>
+      </p>
 
-        <div className="flex flex-col gap-4" role="list" aria-label="Rozmowa z Sona">
-          <motion.div {...pop(0.1)} role="listitem" className={SONA_BUBBLE}>
-            Cześć, jestem Oskar 👋 Buduję strony sam, od pierwszej kreski po publikację. Żadnych
-            agencyjnych kolejek, żadnych podwykonawców.
-          </motion.div>
-
-          <motion.div {...pop(0.25)} role="listitem" className={SONA_BUBBLE}>
-            Rozmawiasz zawsze z osobą, która naprawdę robi Twoją stronę. Dlatego wszystko idzie
-            szybciej i niczego nie trzeba tłumaczyć dwa razy.
-          </motion.div>
-
-          <motion.div {...pop(0.45, true)} role="listitem" className={CLIENT_BUBBLE}>
-            <p aria-hidden className="mb-1.5 text-xs text-paper/60">
-              ★★★★★ · opinia z Google
+      <div className="mt-16 grid gap-10 border-t border-line pt-12 sm:grid-cols-3">
+        {STATS.map((stat, i) => (
+          <motion.div key={stat.value} {...reveal(0.1 + i * 0.1)}>
+            <p className="font-display text-5xl font-semibold tracking-tight md:text-6xl">
+              {stat.value}
             </p>
-            Pełen profesjonalizm. Strona wygląda świetnie, a klienci sami mówią, że łatwo było
-            nas znaleźć.
+            <p className="mt-3 max-w-[16rem] text-sm leading-relaxed text-muted">{stat.label}</p>
           </motion.div>
-
-          <motion.div {...pop(0.65)} role="listitem" className={SONA_BUBBLE}>
-            Twoja strona może być następna.{' '}
-            <a
-              href="#kontakt"
-              className="group relative inline-block pb-0.5 font-medium text-ink"
-            >
-              Napisz do mnie
-              <span
-                aria-hidden
-                className="absolute bottom-0 left-0 h-[1.5px] w-full origin-left scale-x-0 bg-ink transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none"
-              />
-            </a>
-          </motion.div>
-
-          {/* The thread stays open for the visitor */}
-          <motion.div
-            {...pop(0.85)}
-            aria-hidden
-            className="flex w-fit items-center gap-1.5 rounded-2xl rounded-bl-md border border-line bg-paper px-4 py-3.5"
-          >
-            <span className="typing-dot h-1.5 w-1.5 rounded-pill bg-muted" />
-            <span className="typing-dot h-1.5 w-1.5 rounded-pill bg-muted" />
-            <span className="typing-dot h-1.5 w-1.5 rounded-pill bg-muted" />
-          </motion.div>
-        </div>
+        ))}
       </div>
     </section>
   )
