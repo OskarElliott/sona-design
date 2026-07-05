@@ -39,7 +39,9 @@ const CATEGORY_COUNT = new Set(PROJECTS.map((p) => p.category)).size
 const CARD_CLASSES =
   'grid overflow-hidden rounded-card-lg border border-line bg-paper shadow-island md:grid-cols-2'
 
-function CardInner({ project, index, total }: { project: Project; index: number; total: number }) {
+// Body face for all small labels (owner: no mono in this section); the
+// numbering row is gone, the ghost number in the media panel carries it.
+function CardInner({ project, index }: { project: Project; index: number }) {
   return (
     <>
       {/* Media placeholder until real screenshots land */}
@@ -51,9 +53,7 @@ function CardInner({ project, index, total }: { project: Project; index: number;
               'radial-gradient(110% 110% at 25% 0%, rgb(var(--accent) / 0.16), transparent 55%)',
           }}
         />
-        <p className="absolute left-6 top-6 font-mono text-xs uppercase tracking-widest text-muted">
-          zrzut ekranu wkrótce
-        </p>
+        <p className="absolute left-6 top-6 text-xs text-muted">Zrzut ekranu wkrótce</p>
         <span
           aria-hidden
           className="absolute -bottom-6 right-4 font-display text-[9rem] font-black leading-none text-accent/15"
@@ -63,8 +63,9 @@ function CardInner({ project, index, total }: { project: Project; index: number;
       </div>
 
       <div className="flex flex-col justify-center gap-4 p-7 md:p-10">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
-          {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+        <p className="flex items-center gap-2 text-sm text-muted">
+          <span aria-hidden className="h-1.5 w-1.5 rounded-pill bg-accent" />
+          {project.category}
         </p>
         <h3 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
           {project.name}
@@ -81,9 +82,7 @@ function CardInner({ project, index, total }: { project: Project; index: number;
             </li>
           ))}
         </ul>
-        <p className="mt-2 font-mono text-xs uppercase tracking-widest text-muted">
-          case study wkrótce
-        </p>
+        <p className="mt-2 text-xs text-muted">Case study wkrótce</p>
       </div>
     </>
   )
@@ -156,8 +155,8 @@ function CategoriesView({ showPreview }: { showPreview: boolean }) {
                           'radial-gradient(110% 110% at 25% 0%, rgb(var(--accent) / 0.16), transparent 55%)',
                       }}
                     />
-                    <p className="absolute left-4 top-4 font-mono text-[10px] uppercase tracking-widest text-muted">
-                      zrzut ekranu wkrótce
+                    <p className="absolute left-4 top-4 text-xs text-muted">
+                      Zrzut ekranu wkrótce
                     </p>
                     <span
                       aria-hidden
@@ -166,7 +165,7 @@ function CategoriesView({ showPreview }: { showPreview: boolean }) {
                       {hovered! + 1}
                     </span>
                   </div>
-                  <p className="mt-4 font-mono text-xs uppercase tracking-[0.2em] text-muted">
+                  <p className="mt-4 text-sm text-muted">
                     {hoveredProject.category} · {hoveredProject.name}
                   </p>
                 </motion.div>
@@ -260,14 +259,14 @@ export function Projects() {
           >
             {PROJECTS.map((p, i) => (
               <ScrollStackItem key={p.name} itemClassName={CARD_CLASSES}>
-                <CardInner project={p} index={i} total={PROJECTS.length} />
+                <CardInner project={p} index={i} />
               </ScrollStackItem>
             ))}
           </ScrollStack>
         ) : (
           PROJECTS.map((p, i) => (
             <article key={p.name} className={`${CARD_CLASSES} mt-8 first:mt-0`}>
-              <CardInner project={p} index={i} total={PROJECTS.length} />
+              <CardInner project={p} index={i} />
             </article>
           ))
         )}

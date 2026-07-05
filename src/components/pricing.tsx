@@ -155,6 +155,41 @@ export function Pricing() {
         ))}
       </div>
 
+      {/* Decision-anxiety valve right at the decision point: the advisor
+          line. Same hover-underline grammar as the hero text link. */}
+      <motion.div {...reveal(0.25)} className="mx-auto mt-14 max-w-xl text-center">
+        <p className="font-display text-xl font-medium tracking-tight md:text-2xl">
+          Nie wiesz, który pakiet wybrać?
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">
+          Napisz kilka zdań o swojej firmie, a doradzę najprostszy zakres, który ma sens.
+        </p>
+        <a
+          href="#kontakt"
+          className="group relative mt-5 inline-flex items-center gap-1.5 pb-1 text-sm font-medium"
+        >
+          Napisz do mnie
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+            className="transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none"
+          >
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+          <span
+            aria-hidden
+            className="absolute bottom-0 left-0 h-[1.5px] w-full origin-left scale-x-0 bg-ink transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none"
+          />
+        </a>
+      </motion.div>
+
       <Comparison />
       <Faq />
     </section>
