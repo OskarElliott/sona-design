@@ -44,6 +44,11 @@
     text-rendering: optimizeLegibility;
   }
 
+  /* Anchor targets clear the fixed navbar; applies to focused fields too. */
+  [id] {
+    scroll-margin-top: 5.5rem;
+  }
+
   /* Visible keyboard focus is part of the quality floor. */
   :focus-visible {
     outline: 2px solid rgb(var(--accent));
@@ -112,6 +117,24 @@
   .eyebrow-group:hover .wave-hand {
     animation: none;
   }
+}
+
+/* Faint dot grid (Jak to działa). Masked at both edges so the texture
+   breathes in and out instead of hard-starting: sections flow, no seams. */
+.dot-grid {
+  background-image: radial-gradient(rgb(var(--ink) / 0.07) 1px, transparent 1.5px);
+  background-size: 26px 26px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 14%, black 86%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 14%, black 86%, transparent);
+}
+
+/* Scrollable containers that must not show a scrollbar (comparison table) */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 .grain {

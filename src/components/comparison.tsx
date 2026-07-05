@@ -73,7 +73,36 @@ export function Comparison() {
         Porównaj pakiety
       </motion.h3>
 
-      <div className="mt-10 overflow-x-auto">
+      {/* Mobile: stacked per-package cards. The scroll-table pattern fails
+          here: with the bar hidden there is no hint that it scrolls. */}
+      <div className="mt-10 flex flex-col gap-5 md:hidden">
+        {PACKAGES.map((name, col) => (
+          <motion.div
+            key={name}
+            {...reveal(0.05 + col * 0.08)}
+            className={`rounded-card-lg border p-5 ${
+              name === 'Firma' ? 'border-accent/30 bg-accent-soft/20' : 'border-line'
+            }`}
+          >
+            <p className="font-display text-lg font-medium tracking-tight">{name}</p>
+            <ul className="mt-3 flex flex-col">
+              {ROWS.map((row) => (
+                <li
+                  key={row.label}
+                  className="flex items-center justify-between gap-4 border-t border-line py-2.5 text-sm"
+                >
+                  <span className="text-muted">{row.label}</span>
+                  <span className="shrink-0 text-right">
+                    <Cell value={row.values[col]} />
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="no-scrollbar mt-10 hidden overflow-x-auto md:block">
         <div className="min-w-[40rem]">
           {/* Header */}
           <motion.div
