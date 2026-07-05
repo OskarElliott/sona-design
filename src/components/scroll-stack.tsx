@@ -246,6 +246,9 @@ const ScrollStack = ({
         lerp: 0.1,
         syncTouch: true,
         syncTouchLerp: 0.075,
+        // Navbar anchor clicks: Lenis drives them smoothly (and respects
+        // scroll-margin-top) instead of ignoring or fighting the native jump.
+        anchors: true,
       })
 
       lenis.on('scroll', handleScroll)

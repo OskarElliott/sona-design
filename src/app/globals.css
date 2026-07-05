@@ -44,6 +44,11 @@
     text-rendering: optimizeLegibility;
   }
 
+  /* Anchor targets clear the fixed navbar; applies to focused fields too. */
+  [id] {
+    scroll-margin-top: 5.5rem;
+  }
+
   /* Visible keyboard focus is part of the quality floor. */
   :focus-visible {
     outline: 2px solid rgb(var(--accent));
