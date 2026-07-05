@@ -154,8 +154,9 @@ export function Navbar() {
       <AnimatePresence>
         {open && (
           <>
+            {/* Fixed black: ink would invert to a light haze in dark mode */}
             <motion.div
-              className="fixed inset-0 bg-ink/25"
+              className="fixed inset-0 bg-black/30"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

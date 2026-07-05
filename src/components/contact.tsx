@@ -180,7 +180,7 @@ export function Contact() {
               type="checkbox"
               name="consent"
               required
-              className="mt-0.5 h-4 w-4 shrink-0 accent-[#E5322B]"
+              className="mt-0.5 h-4 w-4 shrink-0 accent-[rgb(var(--accent))]"
               {...validityProps}
             />
             Wyrażam zgodę na przetwarzanie moich danych w celu odpowiedzi na wiadomość.
