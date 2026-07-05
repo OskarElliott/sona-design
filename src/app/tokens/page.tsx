@@ -1,7 +1,12 @@
 // ── SCAFFOLD / TOKEN REVIEW PAGE ─────────────────────────────────────────────
 // Temporary preview of palette, radii, fonts and theming. NOT a site section —
 // it gets replaced once real sections start. Wordmark + theme toggle now live
-// in the navbar (step 4).
+// in the navbar (step 4). Kept out of search results (also excluded from the
+// sitemap and disallowed in robots.txt).
+export const metadata = {
+  title: 'Tokens',
+  robots: { index: false, follow: false },
+}
 
 const swatches: { name: string; className: string; textClass?: string }[] = [
   { name: 'paper', className: 'bg-paper border border-line', textClass: 'text-ink' },
