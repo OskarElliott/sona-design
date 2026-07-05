@@ -1,28 +1,33 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import ScrollStack, { ScrollStackItem } from '@/components/scroll-stack'
 
 // Built for n cards (brief §3.6): add a project here and everything
-// (stack, numbering, filter counts) adapts. PlumbingCraft becomes #3 soon.
-// Names/descriptions/screenshots below are placeholders awaiting real data.
+// (stack, numbering, filter counts) adapts. image lives in public/projekty,
+// url is the live site (outbound link + honest external-link SEO).
 type Project = {
   name: string
   tagline: string
   description: string
   category: string
   tags: string[]
+  image?: string
+  url?: string
 }
 
 const PROJECTS: Project[] = [
   {
-    name: 'Pierwsza realizacja',
-    tagline: 'Strona dla lokalnej firmy usługowej',
+    name: 'RafPol Elektric',
+    tagline: 'Elektryk i odnawialne źródła energii · Kraków',
     description:
-      'Krótki opis projektu: jaki był problem, co powstało i co się poprawiło. Ta karta czeka na prawdziwe dane.',
-    category: 'Strona wizytówka',
-    tags: ['Strona wizytówka', 'Darmowa wycena', 'SEO lokalne'],
+      'Strona dla krakowskiej firmy elektroinstalacyjnej z ponad 10-letnim stażem. Porządkuje szeroką ofertę, od instalacji elektrycznych po fotowoltaikę, pompy ciepła i magazyny energii, w jedną przejrzystą całość i prowadzi klienta prosto do kontaktu.',
+    category: 'Strona firmowa',
+    tags: ['Strona firmowa', 'Fotowoltaika', 'SEO lokalne'],
+    image: '/projekty/rafpol.png',
+    url: 'https://www.rafpolelektric.pl/',
   },
   {
     name: 'Druga realizacja',
@@ -44,22 +49,34 @@ const CARD_CLASSES =
 function CardInner({ project, index }: { project: Project; index: number }) {
   return (
     <>
-      {/* Media placeholder until real screenshots land */}
+      {/* Screenshot when present, otherwise the placeholder gradient */}
       <div className="relative aspect-[16/10] overflow-hidden bg-accent-soft/50 md:aspect-auto md:min-h-[24rem]">
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(110% 110% at 25% 0%, rgb(var(--accent) / 0.16), transparent 55%)',
-          }}
-        />
-        <p className="absolute left-6 top-6 text-xs text-muted">Zrzut ekranu wkrótce</p>
-        <span
-          aria-hidden
-          className="absolute -bottom-6 right-4 font-display text-[9rem] font-black leading-none text-accent/15"
-        >
-          {index + 1}
-        </span>
+        {project.image ? (
+          <Image
+            src={project.image}
+            alt={`Zrzut ekranu strony ${project.name}`}
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover object-top"
+          />
+        ) : (
+          <>
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  'radial-gradient(110% 110% at 25% 0%, rgb(var(--accent) / 0.16), transparent 55%)',
+              }}
+            />
+            <p className="absolute left-6 top-6 text-xs text-muted">Zrzut ekranu wkrótce</p>
+            <span
+              aria-hidden
+              className="absolute -bottom-6 right-4 font-display text-[9rem] font-black leading-none text-accent/15"
+            >
+              {index + 1}
+            </span>
+          </>
+        )}
       </div>
 
       <div className="flex flex-col justify-center gap-4 p-7 md:p-10">
@@ -82,7 +99,32 @@ function CardInner({ project, index }: { project: Project; index: number }) {
             </li>
           ))}
         </ul>
-        <p className="mt-2 text-xs text-muted">Case study wkrótce</p>
+        {project.url ? (
+          <a
+            href={project.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group mt-2 inline-flex items-center gap-1.5 text-sm font-medium"
+          >
+            Zobacz stronę
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+              className="transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
+            >
+              <path d="M7 17 17 7M9 7h8v8" />
+            </svg>
+          </a>
+        ) : (
+          <p className="mt-2 text-xs text-muted">Case study wkrótce</p>
+        )}
       </div>
     </>
   )
@@ -148,22 +190,34 @@ function CategoriesView({ showPreview }: { showPreview: boolean }) {
                   transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <div className="relative aspect-[16/10] w-full overflow-hidden rounded-card border border-line bg-accent-soft/60 shadow-island">
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          'radial-gradient(110% 110% at 25% 0%, rgb(var(--accent) / 0.16), transparent 55%)',
-                      }}
-                    />
-                    <p className="absolute left-4 top-4 text-xs text-muted">
-                      Zrzut ekranu wkrótce
-                    </p>
-                    <span
-                      aria-hidden
-                      className="absolute -bottom-4 right-2 font-display text-7xl font-black leading-none text-accent/15"
-                    >
-                      {hovered! + 1}
-                    </span>
+                    {hoveredProject.image ? (
+                      <Image
+                        src={hoveredProject.image}
+                        alt={`Zrzut ekranu strony ${hoveredProject.name}`}
+                        fill
+                        sizes="(min-width: 1024px) 40vw, 100vw"
+                        className="object-cover object-top"
+                      />
+                    ) : (
+                      <>
+                        <div
+                          className="absolute inset-0"
+                          style={{
+                            background:
+                              'radial-gradient(110% 110% at 25% 0%, rgb(var(--accent) / 0.16), transparent 55%)',
+                          }}
+                        />
+                        <p className="absolute left-4 top-4 text-xs text-muted">
+                          Zrzut ekranu wkrótce
+                        </p>
+                        <span
+                          aria-hidden
+                          className="absolute -bottom-4 right-2 font-display text-7xl font-black leading-none text-accent/15"
+                        >
+                          {hovered! + 1}
+                        </span>
+                      </>
+                    )}
                   </div>
                   <p className="mt-4 text-sm text-muted">
                     {hoveredProject.category} · {hoveredProject.name}
