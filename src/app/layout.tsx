@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import localFont from 'next/font/local'
 import { Navbar } from '@/components/navbar'
 import { ThemeProvider } from '@/components/theme-provider'
@@ -48,6 +48,11 @@ export const metadata: Metadata = {
     'strona internetowa cena',
   ],
   alternates: { canonical: '/' },
+  authors: [{ name: SITE_NAME }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  applicationName: SITE_NAME,
+  category: 'technology',
   openGraph: {
     type: 'website',
     locale: 'pl_PL',
@@ -61,7 +66,27 @@ export const metadata: Metadata = {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
-  robots: { index: true, follow: true },
+  // Let Google show large image previews and untruncated snippets in
+  // results — better rich presentation for a portfolio site.
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
+}
+
+// Mobile browser chrome matches the paper, per theme.
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#FCFBF9' },
+    { media: '(prefers-color-scheme: dark)', color: '#141210' },
+  ],
 }
 
 // LocalBusiness schema: tells Google this is a Polish web studio with
@@ -70,11 +95,15 @@ export const metadata: Metadata = {
 const BUSINESS_JSON_LD = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
+  '@id': `${SITE_URL}/#business`,
   name: SITE_NAME,
   description: SITE_DESCRIPTION,
   url: SITE_URL,
+  logo: `${SITE_URL}/icon.png`,
+  image: `${SITE_URL}/opengraph-image`,
   priceRange: 'od 799 PLN',
   areaServed: { '@type': 'Country', name: 'Polska' },
+  serviceType: 'Projektowanie stron internetowych',
   knowsLanguage: 'pl',
   makesOffer: [
     { name: 'Start', price: '799', priceCurrency: 'PLN' },
