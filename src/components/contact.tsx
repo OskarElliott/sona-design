@@ -1,7 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { SITE_EMAIL } from '@/lib/site'
+
+type Status = 'idle' | 'submitting' | 'success' | 'error'
 
 // Kontakt (step 10) — hybrid of the owner's two references. From Shape:
 // the warm oversized greeting, the "hate contact forms?" email escape
@@ -55,6 +58,8 @@ function FieldLabel({
 
 export function Contact() {
   const reduced = useReducedMotion()
+  const [status, setStatus] = useState<Status>('idle')
+  const [errorMsg, setErrorMsg] = useState('')
 
   const reveal = (delay = 0) =>
     reduced
@@ -66,19 +71,38 @@ export function Contact() {
           transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] as const },
         }
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    const data = new FormData(e.currentTarget)
-    const name = String(data.get('name') ?? '')
-    const email = String(data.get('email') ?? '')
-    const phone = String(data.get('phone') ?? '')
-    const message = String(data.get('message') ?? '')
-    const body = encodeURIComponent(
-      `${message}\n\n${name}\n${email}${phone ? `\n${phone}` : ''}`
-    )
-    window.location.href = `mailto:${SITE_EMAIL}?subject=${encodeURIComponent(
-      `Darmowa wycena: ${name}`
-    )}&body=${body}`
+    if (status === 'submitting') return
+    const form = e.currentTarget
+    const data = new FormData(form)
+    setStatus('submitting')
+    setErrorMsg('')
+    try {
+      const res = await fetch('/api/kontakt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: data.get('name'),
+          email: data.get('email'),
+          phone: data.get('phone'),
+          message: data.get('message'),
+          consent: data.get('consent') === 'on',
+          company: data.get('company'), // honeypot
+        }),
+      })
+      if (!res.ok) {
+        const { error } = await res.json().catch(() => ({ error: '' }))
+        setErrorMsg(error || 'Nie udało się wysłać. Spróbuj ponownie.')
+        setStatus('error')
+        return
+      }
+      form.reset()
+      setStatus('success')
+    } catch {
+      setErrorMsg('Brak połączenia. Spróbuj ponownie.')
+      setStatus('error')
+    }
   }
 
   return (
@@ -186,26 +210,58 @@ export function Contact() {
             Wyrażam zgodę na przetwarzanie moich danych w celu odpowiedzi na wiadomość.
           </label>
 
-          <button
-            type="submit"
-            className="group mt-7 inline-flex w-full items-center justify-center gap-2 rounded-pill bg-accent px-6 py-3.5 text-sm font-medium text-white transition-opacity hover:opacity-90 motion-reduce:transition-none sm:w-auto"
-          >
-            Wyślij wiadomość
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-              className="transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none"
+          {/* Honeypot: hidden from people, catnip for bots. Not required, not
+              autofilled; any value means "bot" (handled server-side). */}
+          <div aria-hidden className="absolute left-[-9999px] top-[-9999px]" tabIndex={-1}>
+            <label>
+              Firma
+              <input type="text" name="company" tabIndex={-1} autoComplete="off" />
+            </label>
+          </div>
+
+          {status === 'success' ? (
+            <p
+              role="status"
+              className="mt-7 rounded-card border border-accent/30 bg-accent-soft/40 px-5 py-4 text-sm"
             >
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
-          </button>
+              Dziękuję, wiadomość dotarła. Odpowiadam zwykle tego samego dnia.
+            </p>
+          ) : (
+            <>
+              <button
+                type="submit"
+                disabled={status === 'submitting'}
+                className="group mt-7 inline-flex w-full items-center justify-center gap-2 rounded-pill bg-accent px-6 py-3.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-70 motion-reduce:transition-none sm:w-auto"
+              >
+                {status === 'submitting' ? 'Wysyłam…' : 'Wyślij wiadomość'}
+                {status !== 'submitting' && (
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden
+                    className="transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none"
+                  >
+                    <path d="M5 12h14M13 6l6 6-6 6" />
+                  </svg>
+                )}
+              </button>
+              {status === 'error' && (
+                <p role="alert" className="mt-4 text-sm text-accent">
+                  {errorMsg} Możesz też napisać na{' '}
+                  <a href={`mailto:${SITE_EMAIL}`} className="underline">
+                    {SITE_EMAIL}
+                  </a>
+                  .
+                </p>
+              )}
+            </>
+          )}
         </motion.form>
       </div>
     </section>
