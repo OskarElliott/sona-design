@@ -40,6 +40,21 @@ const FAQS: { question: string; answer: string }[] = [
     answer:
       'Każdy pakiet ma okres darmowych poprawek po publikacji: od dwóch tygodni w Starcie do dwóch miesięcy w Premium. Później możesz zlecać zmiany pojedynczo albo wykupić stałą opiekę.',
   },
+  {
+    question: 'Ile kosztuje strona internetowa dla małej firmy?',
+    answer:
+      'U mnie od 799 zł za stronę wizytówkę do 4 podstron, od 1099 zł za stronę firmową i od 1999 zł za rozbudowany serwis. Dla porównania: agencje w Krakowie liczą za prostą stronę zwykle od 1500 do 3500 zł, często bez podania ceny z góry. U mnie cena jest stała i znasz ją przed startem.',
+  },
+  {
+    question: 'Czy robisz strony dla konkretnych branż, na przykład dla hydraulika albo elektryka?',
+    answer:
+      'Tak, to moja specjalność: strony internetowe dla fachowców i lokalnych usług, między innymi dla hydraulików, elektryków i warsztatów samochodowych. Zbudowałem na przykład stronę dla krakowskiej firmy elektroinstalacyjnej RafPol Elektric. Znam ten rynek, więc wiem, czego szukają Twoi klienci.',
+  },
+  {
+    question: 'Strona internetowa czy wizytówka Google? Co jest ważniejsze?',
+    answer:
+      'Jedno i drugie, bo robią różne rzeczy. Wizytówka Google łapie klientów z mapy i lokalnych wyników, a strona internetowa zamienia ich w zapytania i telefony. Dlatego każdą stronę od razu łączę z profilem firmy w Google, żeby oba kanały pracowały razem.',
+  },
 ]
 
 const FAQ_JSON_LD = {

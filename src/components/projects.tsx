@@ -15,6 +15,7 @@ type Project = {
   category: string
   tags: string[]
   image?: string
+  imageAlt?: string
   url?: string
 }
 
@@ -27,6 +28,7 @@ const PROJECTS: Project[] = [
     category: 'Strona firmowa',
     tags: ['Strona firmowa', 'Fotowoltaika', 'SEO lokalne'],
     image: '/projekty/rafpol.png',
+    imageAlt: 'Strona internetowa dla elektryka z Krakowa: RafPol Elektric',
     url: 'https://www.rafpolelektric.pl/',
   },
   {
@@ -54,7 +56,7 @@ function CardInner({ project, index }: { project: Project; index: number }) {
         {project.image ? (
           <Image
             src={project.image}
-            alt={`Zrzut ekranu strony ${project.name}`}
+            alt={project.imageAlt ?? `Zrzut ekranu strony ${project.name}`}
             fill
             sizes="(min-width: 768px) 50vw, 100vw"
             className="object-cover object-top"
@@ -193,7 +195,7 @@ function CategoriesView({ showPreview }: { showPreview: boolean }) {
                     {hoveredProject.image ? (
                       <Image
                         src={hoveredProject.image}
-                        alt={`Zrzut ekranu strony ${hoveredProject.name}`}
+                        alt={hoveredProject.imageAlt ?? `Zrzut ekranu strony ${hoveredProject.name}`}
                         fill
                         sizes="(min-width: 1024px) 40vw, 100vw"
                         className="object-cover object-top"
@@ -283,6 +285,9 @@ export function Projects() {
 
   return (
     <section id="projekty" className="mx-auto max-w-content px-6 py-24">
+      {/* The design intentionally has no visible heading here (the filter IS
+          the header), so the semantic h2 is screen-reader/crawler only. */}
+      <h2 className="sr-only">Realizacje: strony internetowe dla lokalnych firm</h2>
       <div className="flex items-start justify-center gap-8 md:gap-12">
         <FilterButton
           label="wszystkie"

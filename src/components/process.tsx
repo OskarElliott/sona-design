@@ -62,8 +62,8 @@ export function Process() {
             Jak to działa<span className="text-accent">*</span>
           </h2>
           <p className="mt-5 max-w-sm leading-relaxed text-muted">
-            Trzy proste kroki od pierwszej rozmowy do strony, która pracuje na Ciebie. Bez
-            zaliczek i bez niespodzianek.
+            Tworzenie strony internetowej w trzech prostych krokach: od pierwszej rozmowy do
+            strony, która pracuje na Ciebie. Bez zaliczek i bez niespodzianek.
           </p>
           <p className="mt-4 text-sm text-muted">
             <span className="text-accent">*</span> Płatność dopiero przy publikacji.

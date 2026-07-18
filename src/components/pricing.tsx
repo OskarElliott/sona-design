@@ -94,7 +94,8 @@ export function Pricing() {
           Pakiety stron
         </h2>
         <p className="mt-4 text-muted">
-          Wybierz zakres, resztą zajmę się ja. Płatność dopiero przy publikacji.
+          Przejrzysty cennik stron internetowych: wybierz zakres, resztą zajmę się ja. Płatność
+          dopiero przy publikacji.
         </p>
       </motion.div>
 
