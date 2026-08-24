@@ -2,7 +2,14 @@ import type { Metadata, Viewport } from 'next'
 import localFont from 'next/font/local'
 import { Navbar } from '@/components/navbar'
 import { ThemeProvider } from '@/components/theme-provider'
-import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from '@/lib/site'
+import {
+  SITE_DESCRIPTION,
+  SITE_EMAIL,
+  SITE_NAME,
+  SITE_PHONE,
+  SITE_TITLE,
+  SITE_URL,
+} from '@/lib/site'
 import './globals.css'
 
 // Display — Overused Grotesk variable (300–900). ALPHA font: Polish
@@ -38,14 +45,17 @@ export const metadata: Metadata = {
   title: { default: SITE_TITLE, template: `%s · ${SITE_NAME}` },
   description: SITE_DESCRIPTION,
   keywords: [
-    'strony internetowe',
+    'strony internetowe Kraków',
+    'tworzenie stron internetowych Kraków',
+    'strony www Kraków',
+    'projektowanie stron internetowych Kraków',
     'strona internetowa dla firmy',
+    'strona internetowa dla małej firmy',
     'strona dla hydraulika',
     'strona dla elektryka',
-    'strona dla warsztatu',
-    'tworzenie stron internetowych',
-    'strona wizytówka',
-    'strona internetowa cena',
+    'strona internetowa dla warsztatu',
+    'ile kosztuje strona internetowa',
+    'strona wizytówka cena',
   ],
   alternates: { canonical: '/' },
   authors: [{ name: SITE_NAME }],
@@ -89,9 +99,20 @@ export const viewport: Viewport = {
   ],
 }
 
-// LocalBusiness schema: tells Google this is a Polish web studio with
-// visible fixed-from prices. Offer data mirrors pricing.tsx; update both
-// together when real rates land.
+// LocalBusiness schema: a Kraków web studio serving the city + nearby
+// towns, with visible fixed-from prices. NAP (name/phone) mirrors the
+// Google Business Profile; geo is the Kraków anchor (no street address —
+// service-area business). Offers mirror pricing.tsx.
+const SERVICE_AREAS = [
+  'Kraków',
+  'Wieliczka',
+  'Skawina',
+  'Niepołomice',
+  'Zabierzów',
+  'Krzeszowice',
+  'Michałowice',
+]
+
 const BUSINESS_JSON_LD = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
@@ -101,10 +122,24 @@ const BUSINESS_JSON_LD = {
   url: SITE_URL,
   logo: `${SITE_URL}/icon.png`,
   image: `${SITE_URL}/opengraph-image`,
+  telephone: SITE_PHONE,
+  email: SITE_EMAIL,
   priceRange: 'od 799 PLN',
-  areaServed: { '@type': 'Country', name: 'Polska' },
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Kraków',
+    addressRegion: 'małopolskie',
+    addressCountry: 'PL',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: 50.0647, longitude: 19.945 },
+  // Kraków anchor cities for local relevance PLUS the whole country:
+  // fully remote work for firms anywhere in Poland.
+  areaServed: [
+    ...SERVICE_AREAS.map((name) => ({ '@type': 'City', name })),
+    { '@type': 'Country', name: 'Polska' },
+  ],
   serviceType: 'Projektowanie stron internetowych',
-  knowsLanguage: 'pl',
+  knowsLanguage: ['pl', 'en'],
   makesOffer: [
     { name: 'Start', price: '799', priceCurrency: 'PLN' },
     { name: 'Firma', price: '1099', priceCurrency: 'PLN' },
