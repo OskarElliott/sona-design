@@ -11,6 +11,7 @@ export const SITE_EMAIL = 'kontakt@sonadesign.pl'
 // Phone must match the Google Business Profile exactly (NAP signal).
 export const SITE_PHONE = '+48662416361'
 export const SITE_PHONE_DISPLAY = '662 416 361'
+export const SITE_WHATSAPP = 'https://wa.me/message/AIT6BXVHK6C4C1'
 
 // Kraków-primary positioning (owner decision): lead SEO with the city,
 // keep brand copy broadly appealing.

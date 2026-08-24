@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
-import { SITE_EMAIL, SITE_PHONE, SITE_PHONE_DISPLAY } from '@/lib/site'
+import { SITE_EMAIL, SITE_PHONE, SITE_PHONE_DISPLAY, SITE_WHATSAPP } from '@/lib/site'
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
@@ -146,6 +146,22 @@ export function Contact() {
                 className="absolute bottom-0 left-0 h-[1.5px] w-full origin-left scale-x-0 bg-ink transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none"
               />
             </a>
+          </p>
+          <p className="mt-2 text-sm text-muted">
+            Albo napisz na{' '}
+            <a
+              href={SITE_WHATSAPP}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative inline-block pb-0.5 font-medium text-ink"
+            >
+              WhatsApp
+              <span
+                aria-hidden
+                className="absolute bottom-0 left-0 h-[1.5px] w-full origin-left scale-x-0 bg-ink transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none"
+              />
+            </a>
+            . Odpisuję szybko.
           </p>
           <p className="mt-2 text-sm text-muted">Zero spamu. Odpowiadam osobiście.</p>
         </motion.div>

@@ -132,7 +132,12 @@ const BUSINESS_JSON_LD = {
     addressCountry: 'PL',
   },
   geo: { '@type': 'GeoCoordinates', latitude: 50.0647, longitude: 19.945 },
-  areaServed: SERVICE_AREAS.map((name) => ({ '@type': 'City', name })),
+  // Kraków anchor cities for local relevance PLUS the whole country:
+  // fully remote work for firms anywhere in Poland.
+  areaServed: [
+    ...SERVICE_AREAS.map((name) => ({ '@type': 'City', name })),
+    { '@type': 'Country', name: 'Polska' },
+  ],
   serviceType: 'Projektowanie stron internetowych',
   knowsLanguage: ['pl', 'en'],
   makesOffer: [

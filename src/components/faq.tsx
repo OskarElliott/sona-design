@@ -55,6 +55,11 @@ const FAQS: { question: string; answer: string }[] = [
     answer:
       'Jedno i drugie, bo robią różne rzeczy. Wizytówka Google łapie klientów z mapy i lokalnych wyników, a strona internetowa zamienia ich w zapytania i telefony. Dlatego każdą stronę od razu łączę z profilem firmy w Google, żeby oba kanały pracowały razem.',
   },
+  {
+    question: 'Czy robisz strony tylko dla firm z Krakowa?',
+    answer:
+      'Nie, pracuję w pełni zdalnie dla firm z całej Polski. Kraków to moja baza, więc tu najłatwiej o spotkanie na żywo, ale cały proces, od rozmowy po publikację, działa tak samo dobrze online, przez telefon i WhatsApp.',
+  },
 ]
 
 const FAQ_JSON_LD = {

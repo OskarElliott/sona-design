@@ -1,4 +1,10 @@
-import { SITE_EMAIL, SITE_NAME, SITE_PHONE, SITE_PHONE_DISPLAY } from '@/lib/site'
+import {
+  SITE_EMAIL,
+  SITE_NAME,
+  SITE_PHONE,
+  SITE_PHONE_DISPLAY,
+  SITE_WHATSAPP,
+} from '@/lib/site'
 
 // Footer (step 11) — Shape's inverted floating card (ink island on paper,
 // flips to cream in dark like the Firma pricing card), KOTA's email-as-
@@ -84,6 +90,17 @@ export function Footer() {
               <a href={`tel:${SITE_PHONE}`} className="hover:text-paper">
                 {SITE_PHONE_DISPLAY}
               </a>
+              <span aria-hidden className="mx-2 text-paper/40">
+                ·
+              </span>
+              <a
+                href={SITE_WHATSAPP}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-paper"
+              >
+                WhatsApp
+              </a>
             </p>
             <p className="mt-1 text-sm text-paper/60">Odpowiadam zwykle tego samego dnia.</p>
           </div>
@@ -100,7 +117,7 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col gap-3 border-t border-paper/15 pt-6 text-xs text-paper/50 md:flex-row md:items-center md:justify-between">
           <p>
-            © {new Date().getFullYear()} {SITE_NAME} · Strony internetowe · Kraków i okolice
+            © {new Date().getFullYear()} {SITE_NAME} · Strony internetowe · Kraków i cała Polska
           </p>
           <a
             href="#hero"
