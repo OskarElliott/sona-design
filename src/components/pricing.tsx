@@ -97,6 +97,9 @@ export function Pricing() {
           Przejrzysty cennik stron internetowych: wybierz zakres, resztą zajmę się ja. Płatność
           dopiero przy publikacji.
         </p>
+        <p className="mt-3 text-sm text-muted">
+          Prowadzę maksymalnie trzy projekty w miesiącu, żeby każdy dostał pełną uwagę.
+        </p>
       </motion.div>
 
       <div className="mx-auto mt-16 grid max-w-5xl gap-5 md:grid-cols-3 md:items-stretch">
@@ -143,7 +146,7 @@ export function Pricing() {
             </ul>
 
             <a
-              href="#kontakt"
+              href="/#kontakt"
               className={`mt-9 block rounded-pill px-5 py-3 text-center text-sm font-medium transition-colors motion-reduce:transition-none ${
                 tier.featured
                   ? 'bg-accent text-white hover:opacity-90'
@@ -166,7 +169,7 @@ export function Pricing() {
           Napisz kilka zdań o swojej firmie, a doradzę najprostszy zakres, który ma sens.
         </p>
         <a
-          href="#kontakt"
+          href="/#kontakt"
           className="group relative mt-5 inline-flex items-center gap-1.5 pb-1 text-sm font-medium"
         >
           Napisz do mnie

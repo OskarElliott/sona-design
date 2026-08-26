@@ -121,8 +121,43 @@ export function Contact() {
             z konkretną ceną i terminem.
           </p>
 
-          <p className="mt-8 text-sm text-muted">
-            Nie lubisz formularzy?{' '}
+          {/* Channels first: this audience messages and calls, it does not
+              fill in forms. WhatsApp is the primary action. */}
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <a
+              href={SITE_WHATSAPP}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center justify-center gap-2.5 rounded-pill bg-accent px-6 py-3.5 text-sm font-medium text-white transition-opacity hover:opacity-90 motion-reduce:transition-none"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                <path d="M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.3-1.38a9.86 9.86 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.44 9.9-9.9 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.03-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.82 2.42a8.17 8.17 0 0 1 2.41 5.82c0 4.54-3.7 8.22-8.24 8.22Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.44-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.29Z" />
+              </svg>
+              Napisz na WhatsApp
+            </a>
+            <a
+              href={`tel:${SITE_PHONE}`}
+              className="inline-flex items-center justify-center gap-2 rounded-pill border border-line px-6 py-3.5 text-sm font-medium transition-colors hover:border-accent hover:text-accent motion-reduce:transition-none"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z" />
+              </svg>
+              {SITE_PHONE_DISPLAY}
+            </a>
+          </div>
+
+          <p className="mt-5 text-sm text-muted">
+            Wolisz e-mail?{' '}
             <a
               href={`mailto:${SITE_EMAIL}`}
               className="group relative inline-block pb-0.5 font-medium text-ink"
@@ -134,36 +169,11 @@ export function Contact() {
               />
             </a>
           </p>
-          <p className="mt-4 text-sm text-muted">
-            Wolisz zadzwonić?{' '}
-            <a
-              href={`tel:${SITE_PHONE}`}
-              className="group relative inline-block pb-0.5 font-medium text-ink"
-            >
-              {SITE_PHONE_DISPLAY}
-              <span
-                aria-hidden
-                className="absolute bottom-0 left-0 h-[1.5px] w-full origin-left scale-x-0 bg-ink transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none"
-              />
-            </a>
-          </p>
-          <p className="mt-2 text-sm text-muted">
-            Albo napisz na{' '}
-            <a
-              href={SITE_WHATSAPP}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative inline-block pb-0.5 font-medium text-ink"
-            >
-              WhatsApp
-              <span
-                aria-hidden
-                className="absolute bottom-0 left-0 h-[1.5px] w-full origin-left scale-x-0 bg-ink transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none"
-              />
-            </a>
-            . Odpisuję szybko.
-          </p>
           <p className="mt-2 text-sm text-muted">Zero spamu. Odpowiadam osobiście.</p>
+          <p className="mt-6 border-t border-line pt-5 text-sm text-muted">
+            W danym miesiącu prowadzę najwyżej trzy projekty. Jeśli akurat mam komplet, po prostu
+            ustalimy termin startu.
+          </p>
         </motion.div>
 
         <motion.form
@@ -171,7 +181,9 @@ export function Contact() {
           onSubmit={onSubmit}
           className="rounded-card-lg border border-line bg-paper p-7 md:p-9"
         >
-          <div className="grid gap-5 sm:grid-cols-2">
+          <p className="text-sm text-muted">Wolisz formularz? Też działa.</p>
+
+          <div className="mt-6 grid gap-5 sm:grid-cols-2">
             <div className="flex flex-col gap-2">
               <FieldLabel htmlFor="k-name" hint="wymagane">
                 Imię
@@ -185,16 +197,17 @@ export function Contact() {
                 {...validityProps}
               />
             </div>
+            {/* Phone required, e-mail optional: this audience calls. */}
             <div className="flex flex-col gap-2">
-              <FieldLabel htmlFor="k-email" hint="wymagane">
-                E-mail
+              <FieldLabel htmlFor="k-phone" hint="wymagane">
+                Telefon
               </FieldLabel>
               <input
-                id="k-email"
-                name="email"
-                type="email"
+                id="k-phone"
+                name="phone"
+                type="tel"
                 required
-                autoComplete="email"
+                autoComplete="tel"
                 className={INPUT_CLASSES}
                 {...validityProps}
               />
@@ -202,15 +215,16 @@ export function Contact() {
           </div>
 
           <div className="mt-5 flex flex-col gap-2">
-            <FieldLabel htmlFor="k-phone" hint="opcjonalnie">
-              Telefon
+            <FieldLabel htmlFor="k-email" hint="opcjonalnie">
+              E-mail
             </FieldLabel>
             <input
-              id="k-phone"
-              name="phone"
-              type="tel"
-              autoComplete="tel"
+              id="k-email"
+              name="email"
+              type="email"
+              autoComplete="email"
               className={INPUT_CLASSES}
+              {...validityProps}
             />
           </div>
 

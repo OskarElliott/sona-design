@@ -11,11 +11,11 @@ import {
 import { useTheme } from 'next-themes'
 
 const LINKS = [
-  { href: '#projekty', label: 'Projekty' },
-  { href: '#o-mnie', label: 'O mnie' },
-  { href: '#jak-to-dziala', label: 'Jak to działa' },
-  { href: '#ceny', label: 'Ceny' },
-  { href: '#kontakt', label: 'Kontakt' },
+  { href: '/#projekty', label: 'Projekty' },
+  { href: '/#o-mnie', label: 'O mnie' },
+  { href: '/#jak-to-dziala', label: 'Jak to działa' },
+  { href: '/#ceny', label: 'Ceny' },
+  { href: '/#kontakt', label: 'Kontakt' },
 ]
 
 function SunIcon() {
@@ -98,7 +98,7 @@ export function Navbar() {
             : 'border-transparent bg-transparent'
         }`}
       >
-        <a href="#" className="rounded-pill font-display text-2xl font-semibold tracking-tight">
+        <a href="/" className="rounded-pill font-display text-2xl font-semibold tracking-tight">
           Sona<span className="text-accent">.</span>
         </a>
 
@@ -129,7 +129,7 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <a
-            href="#kontakt"
+            href="/#kontakt"
             className="hidden rounded-pill bg-accent px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 motion-reduce:transition-none sm:inline-block"
           >
             Darmowa wycena
@@ -176,7 +176,7 @@ export function Navbar() {
               className="fixed inset-x-3 top-3 rounded-card-lg border border-line bg-paper p-5 shadow-island md:hidden"
             >
               <div className="flex items-center justify-between">
-                <a href="#" onClick={() => setOpen(false)} className="rounded-pill font-display text-2xl font-semibold tracking-tight">
+                <a href="/" onClick={() => setOpen(false)} className="rounded-pill font-display text-2xl font-semibold tracking-tight">
                   Sona<span className="text-accent">.</span>
                 </a>
                 <button
@@ -203,7 +203,7 @@ export function Navbar() {
                 ))}
               </nav>
               <a
-                href="#kontakt"
+                href="/#kontakt"
                 onClick={() => setOpen(false)}
                 className="mt-4 block rounded-pill bg-accent px-5 py-3 text-center font-medium text-white"
               >

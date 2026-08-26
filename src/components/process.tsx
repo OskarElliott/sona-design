@@ -8,10 +8,13 @@ import { motion, useReducedMotion } from 'framer-motion'
 // promise, same symbol language as the hero. Dot grid lives ONLY here
 // (brief §1). SEO: real <ol> semantics, h2 -> h3 hierarchy, HowTo JSON-LD.
 
-const STEPS = [
+const STEPS: { name: string; text: string; note?: string }[] = [
   {
     name: 'Rozmowa',
     text: 'Krótka rozmowa o Twojej firmie i tym, czego potrzebujesz. Ustalamy zakres, jedną konkretną cenę i termin. Zero zobowiązań.',
+    // The real barrier is not money, it is the belief that a website means
+    // homework. Said plainly, right where the visitor first wonders.
+    note: 'Niczego nie musisz pisać ani zbierać. Biorę to, co już masz w profilu Google i na Facebooku, sam piszę teksty, a Ty je tylko zatwierdzasz.',
   },
   {
     name: 'Projekt',
@@ -69,7 +72,7 @@ export function Process() {
             <span className="text-accent">*</span> Płatność dopiero przy publikacji.
           </p>
           <a
-            href="#kontakt"
+            href="/#kontakt"
             className="group relative mt-8 inline-flex items-center gap-1.5 pb-1 text-sm font-medium"
           >
             Darmowa wycena
@@ -127,6 +130,11 @@ export function Process() {
                     {step.name}
                   </h3>
                   <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">{step.text}</p>
+                  {step.note && (
+                    <p className="mt-4 max-w-xl rounded-card border border-line bg-accent-soft/30 px-4 py-3 text-sm leading-relaxed">
+                      {step.note}
+                    </p>
+                  )}
                 </div>
               </div>
             </motion.li>

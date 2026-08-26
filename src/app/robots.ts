@@ -3,7 +3,8 @@ import { SITE_URL } from '@/lib/site'
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: '*', allow: '/', disallow: '/tokens' },
+    // /polecenia is a private link handed to clients after delivery.
+    rules: { userAgent: '*', allow: '/', disallow: ['/tokens', '/polecenia'] },
     sitemap: `${SITE_URL}/sitemap.xml`,
   }
 }

@@ -28,7 +28,7 @@ const FAQS: { question: string; answer: string }[] = [
   {
     question: 'Czy strona będzie widoczna w Google?',
     answer:
-      'Tak. Każda strona ma SEO lokalne: opisy usług, dane firmy, mapę i szybkie ładowanie. To fundament, dzięki któremu znajdą Cię klienci z okolicy.',
+      'Tak. Każda strona ma SEO lokalne: opisy usług, dane firmy, mapę i szybkie ładowanie. To fundament, dzięki któremu znajdą Cię klienci, którzy szukają takich usług jak Twoje.',
   },
   {
     question: 'Czy pomagasz z domeną i hostingiem?',
@@ -43,22 +43,30 @@ const FAQS: { question: string; answer: string }[] = [
   {
     question: 'Ile kosztuje strona internetowa dla małej firmy?',
     answer:
-      'U mnie od 799 zł za stronę wizytówkę do 4 podstron, od 1099 zł za stronę firmową i od 1999 zł za rozbudowany serwis. Dla porównania: agencje w Krakowie liczą za prostą stronę zwykle od 1500 do 3500 zł, często bez podania ceny z góry. U mnie cena jest stała i znasz ją przed startem.',
+      'U mnie od 799 zł za stronę wizytówkę, od 1099 zł za stronę firmową i od 1999 zł za rozbudowany serwis. Ostateczna cena zależy od zakresu: liczby podstron, treści do przygotowania i funkcji, takich jak rezerwacje czy płatności. Przed startem znasz jedną konkretną cenę i ona już się nie zmienia.',
   },
   {
     question: 'Czy robisz strony dla konkretnych branż, na przykład dla hydraulika albo elektryka?',
     answer:
-      'Tak, to moja specjalność: strony internetowe dla fachowców i lokalnych usług, między innymi dla hydraulików, elektryków i warsztatów samochodowych. Zbudowałem na przykład stronę dla krakowskiej firmy elektroinstalacyjnej RafPol Elektric. Znam ten rynek, więc wiem, czego szukają Twoi klienci.',
+      'Tak, to moja specjalność: strony internetowe dla fachowców i firm usługowych, między innymi dla hydraulików, elektryków i warsztatów samochodowych. Zbudowałem na przykład stronę dla firmy elektroinstalacyjnej RafPol Elektric. Znam ten rynek, więc wiem, czego szukają Twoi klienci.',
   },
   {
     question: 'Strona internetowa czy wizytówka Google? Co jest ważniejsze?',
     answer:
-      'Jedno i drugie, bo robią różne rzeczy. Wizytówka Google łapie klientów z mapy i lokalnych wyników, a strona internetowa zamienia ich w zapytania i telefony. Dlatego każdą stronę od razu łączę z profilem firmy w Google, żeby oba kanały pracowały razem.',
+      'Jedno i drugie, bo robią różne rzeczy. Wizytówka pokazuje Twoją firmę w Google i na mapie, a strona zamienia odwiedzających w zapytania i telefony. Dlatego każdą stronę od razu łączę z profilem firmy w Google, żeby oba kanały pracowały razem.',
   },
   {
-    question: 'Czy robisz strony tylko dla firm z Krakowa?',
+    question: 'Co, jeśli gotowa strona mi się nie spodoba?',
     answer:
-      'Nie, pracuję w pełni zdalnie dla firm z całej Polski. Kraków to moja baza, więc tu najłatwiej o spotkanie na żywo, ale cały proces, od rozmowy po publikację, działa tak samo dobrze online, przez telefon i WhatsApp.',
+      'Nic nie tracisz. Płacisz dopiero przy publikacji, więc jeśli efekt Ci nie odpowiada, po prostu rezygnujesz. Zanim do tego dojdzie, pokazuję Ci postępy i nanoszę poprawki, więc zwykle dochodzimy do wersji, którą chcesz pokazać światu.',
+  },
+  {
+    // The one place a location may appear: a light organic signal that ties
+    // the site to the Google Business Profile. Framed so that location is
+    // explicitly not a variable for the client.
+    question: 'Jak wygląda współpraca na odległość?',
+    answer:
+      'Cały proces działa online: rozmowa przez telefon albo WhatsApp, projekt do obejrzenia w przeglądarce, poprawki na bieżąco. Na co dzień pracuję z Krakowa, ale dla współpracy nie ma to żadnego znaczenia.',
   },
 ]
 

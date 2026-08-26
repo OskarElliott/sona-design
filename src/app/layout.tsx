@@ -44,18 +44,20 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: SITE_TITLE, template: `%s · ${SITE_NAME}` },
   description: SITE_DESCRIPTION,
+  // National first. Two city-qualified terms are kept as a light organic
+  // signal only (national head terms are unrealistic for a new site); none
+  // of this surfaces in visible copy.
   keywords: [
-    'strony internetowe Kraków',
-    'tworzenie stron internetowych Kraków',
-    'strony www Kraków',
-    'projektowanie stron internetowych Kraków',
-    'strona internetowa dla firmy',
+    'strony internetowe dla firm',
+    'tworzenie stron internetowych',
     'strona internetowa dla małej firmy',
     'strona dla hydraulika',
     'strona dla elektryka',
     'strona internetowa dla warsztatu',
     'ile kosztuje strona internetowa',
     'strona wizytówka cena',
+    'strony internetowe Kraków',
+    'tworzenie stron internetowych Kraków',
   ],
   alternates: { canonical: '/' },
   authors: [{ name: SITE_NAME }],
@@ -99,20 +101,10 @@ export const viewport: Viewport = {
   ],
 }
 
-// LocalBusiness schema: a Kraków web studio serving the city + nearby
-// towns, with visible fixed-from prices. NAP (name/phone) mirrors the
-// Google Business Profile; geo is the Kraków anchor (no street address —
-// service-area business). Offers mirror pricing.tsx.
-const SERVICE_AREAS = [
-  'Kraków',
-  'Wieliczka',
-  'Skawina',
-  'Niepołomice',
-  'Zabierzów',
-  'Krzeszowice',
-  'Michałowice',
-]
-
+// ProfessionalService schema. Work is remote and national, so areaServed
+// is the whole country. The address/geo stay as the registered business
+// location: invisible to visitors, but they tie this site to the Google
+// Business Profile as one entity (NAP). Offers mirror pricing.tsx.
 const BUSINESS_JSON_LD = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
@@ -132,12 +124,7 @@ const BUSINESS_JSON_LD = {
     addressCountry: 'PL',
   },
   geo: { '@type': 'GeoCoordinates', latitude: 50.0647, longitude: 19.945 },
-  // Kraków anchor cities for local relevance PLUS the whole country:
-  // fully remote work for firms anywhere in Poland.
-  areaServed: [
-    ...SERVICE_AREAS.map((name) => ({ '@type': 'City', name })),
-    { '@type': 'Country', name: 'Polska' },
-  ],
+  areaServed: { '@type': 'Country', name: 'Polska' },
   serviceType: 'Projektowanie stron internetowych',
   knowsLanguage: ['pl', 'en'],
   makesOffer: [

@@ -38,10 +38,13 @@ export async function POST(request: Request) {
 
   if (trap) return NextResponse.json({ ok: true })
 
-  if (!name || !email || !message) {
+  // Phone is required and e-mail optional: this audience calls. If an
+  // e-mail is supplied it still has to be valid, and it becomes the
+  // reply-to; otherwise the phone in the body is the way back.
+  if (!name || !phone || !message) {
     return NextResponse.json({ error: 'Uzupełnij wymagane pola.' }, { status: 400 })
   }
-  if (!isEmail(email)) {
+  if (email && !isEmail(email)) {
     return NextResponse.json({ error: 'Podaj poprawny adres e-mail.' }, { status: 400 })
   }
   if (!consent) {
@@ -68,12 +71,12 @@ export async function POST(request: Request) {
     const { error } = await resend.emails.send({
       from,
       to,
-      replyTo: email,
+      ...(email ? { replyTo: email } : {}),
       subject: `Darmowa wycena: ${name}`,
       text: [
         `Imię: ${name}`,
-        `E-mail: ${email}`,
-        phone ? `Telefon: ${phone}` : null,
+        `Telefon: ${phone}`,
+        email ? `E-mail: ${email}` : null,
         '',
         message,
       ]
