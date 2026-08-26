@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, useReducedMotion } from 'framer-motion'
+import { reveal as sharedReveal } from '@/lib/motion'
 import { Comparison } from '@/components/comparison'
 import { Faq } from '@/components/faq'
 
@@ -19,7 +20,7 @@ const TIERS: Tier[] = [
   {
     name: 'Start',
     price: 799,
-    blurb: 'Solidna strona na dobry początek. Wszystko, czego potrzebuje lokalna firma, żeby być znajdowaną.',
+    blurb: 'Solidna strona na dobry początek. Wszystko, czego potrzeba, żeby klienci Cię znaleźli.',
     features: [
       'Do 4 podstron',
       'Projekt dopasowany do firmy',
@@ -44,7 +45,7 @@ const TIERS: Tier[] = [
   {
     name: 'Premium',
     price: 1999,
-    blurb: 'Rozbudowana strona z funkcjami na miarę i pierwszeństwem w kolejce.',
+    blurb: 'Rozbudowana strona z funkcjami na miarę i pierwszeństwem w realizacji.',
     features: [
       '9 i więcej podstron',
       'Priorytetowa realizacja',
@@ -77,15 +78,8 @@ function CheckIcon({ className = 'text-accent' }: { className?: string }) {
 export function Pricing() {
   const reduced = useReducedMotion()
 
-  const reveal = (delay = 0) =>
-    reduced
-      ? {}
-      : {
-          initial: { opacity: 0, y: 28 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, margin: '-60px' },
-          transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] as const },
-        }
+  // Shared page-wide reveal (see lib/motion.ts).
+  const reveal = (delay = 0) => sharedReveal(reduced, { delay })
 
   return (
     <section id="ceny" className="mx-auto max-w-content px-6 py-24">

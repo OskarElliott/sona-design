@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
+import { reveal as sharedReveal } from '@/lib/motion'
 import { SITE_EMAIL, SITE_PHONE, SITE_PHONE_DISPLAY, SITE_WHATSAPP } from '@/lib/site'
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
@@ -61,15 +62,8 @@ export function Contact() {
   const [status, setStatus] = useState<Status>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
-  const reveal = (delay = 0) =>
-    reduced
-      ? {}
-      : {
-          initial: { opacity: 0, y: 24 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, margin: '-60px' },
-          transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] as const },
-        }
+  // Shared page-wide reveal (see lib/motion.ts).
+  const reveal = (delay = 0) => sharedReveal(reduced, { delay })
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()

@@ -187,7 +187,7 @@ export function Hero() {
         {/* Slimmed to price only: the payment promise now owns the
             Guarantee block directly below the hero. */}
         <motion.p {...item} className="mt-6 text-sm text-muted">
-          <span className="text-accent">*</span> od 799 zł, jedna cena znana przed startem
+          <span className="text-accent">*</span> od 799 zł, jedna cena, znana przed startem
         </motion.p>
 
         <motion.div {...item} className="mt-9 flex items-center gap-7">

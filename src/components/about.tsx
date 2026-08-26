@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion'
+import { reveal as sharedReveal } from '@/lib/motion'
 
 // O mnie: no name, no photo, no invented reviews. A scroll-driven
 // manifesto where each word inks up as the visitor scrolls through it.
@@ -16,7 +17,7 @@ import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } f
 // Copy deliberately echoes the H1 ("projektuję strony internetowe",
 // "dzwoni telefon") so the heading's terms exist in body text (SEO audit).
 const SEGMENTS: { text: string; accent?: boolean }[] = [
-  { text: 'Sona to studio jednej osoby. Projektuję strony internetowe, po których dzwoni telefon: projekt, kod i wdrożenie w jednych rękach, bez pośredników i bez tłumaczenia niczego dwa razy. Robię najwyżej trzy projekty w miesiącu, więc Twój dostaje ' },
+  { text: 'Sona to studio jednej osoby. Projektuję strony internetowe, przez które dzwoni telefon: projekt, kod i wdrożenie w jednych rękach, bez pośredników i bez tłumaczenia tego samego dwa razy. Robię najwyżej trzy projekty w miesiącu, więc Twój dostaje ' },
   { text: 'całą uwagę.', accent: true },
 ]
 
@@ -59,15 +60,8 @@ export function About() {
       .map((word) => ({ word, accent: seg.accent }))
   )
 
-  const reveal = (delay = 0) =>
-    reduced
-      ? {}
-      : {
-          initial: { opacity: 0, y: 22 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, margin: '-60px' },
-          transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] as const },
-        }
+  // Shared page-wide reveal (see lib/motion.ts).
+  const reveal = (delay = 0) => sharedReveal(reduced, { delay })
 
   return (
     <section ref={sectionRef} id="o-mnie" className="mx-auto max-w-content px-6 py-28">

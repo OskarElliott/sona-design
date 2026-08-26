@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
+import { EASE, reveal as sharedReveal } from '@/lib/motion'
 
 // FAQ at the bottom of Ceny. Answers stay mounted (height-animated, never
 // unmounted) so the full text ships in the served HTML for crawlers, and
@@ -21,7 +22,7 @@ const FAQS: { question: string; answer: string }[] = [
       'Pakiet Start to zwykle około tygodnia od pierwszej rozmowy. Firma potrzebuje około dwóch tygodni, a przy Premium termin ustalamy wspólnie przed startem.',
   },
   {
-    question: 'Skąd cena od, a nie jedna sztywna?',
+    question: 'Dlaczego cena jest od, a nie sztywna?',
     answer:
       'Bo zakres bywa różny. Po krótkiej rozmowie dostajesz jedną konkretną cenę i ona już się nie zmienia.',
   },
@@ -36,7 +37,7 @@ const FAQS: { question: string; answer: string }[] = [
       'Tak, biorę na siebie całą techniczną stronę: domenę, hosting i pocztę firmową. Ty zajmujesz się swoją robotą.',
   },
   {
-    question: 'Co jeśli po publikacji będę chciał coś zmienić?',
+    question: 'Co, jeśli po publikacji będę chciał coś zmienić?',
     answer:
       'Każdy pakiet ma okres darmowych poprawek po publikacji: od dwóch tygodni w Starcie do dwóch miesięcy w Premium. Później możesz zlecać zmiany pojedynczo albo wykupić stałą opiekę.',
   },
@@ -84,14 +85,8 @@ export function Faq() {
   const reduced = useReducedMotion()
   const [open, setOpen] = useState<number | null>(null)
 
-  const reveal = reduced
-    ? {}
-    : {
-        initial: { opacity: 0, y: 18 },
-        whileInView: { opacity: 1, y: 0 },
-        viewport: { once: true, margin: '-40px' },
-        transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const },
-      }
+  // Shared page-wide reveal (see lib/motion.ts).
+  const reveal = sharedReveal(reduced)
 
   return (
     <div id="faq" className="mx-auto mt-28 max-w-2xl">
@@ -131,7 +126,7 @@ export function Faq() {
                   aria-hidden
                   className="shrink-0 text-muted"
                   animate={{ rotate: isOpen ? 45 : 0 }}
-                  transition={reduced ? { duration: 0 } : { duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  transition={reduced ? { duration: 0 } : { duration: 0.3, ease: EASE }}
                 >
                   <path d="M12 5v14M5 12h14" />
                 </motion.svg>
@@ -144,13 +139,13 @@ export function Faq() {
                 transition={
                   reduced
                     ? { duration: 0 }
-                    : { height: { duration: 0.35, ease: [0.22, 1, 0.36, 1] }, opacity: { duration: 0.25 } }
+                    : { height: { duration: 0.35, ease: EASE }, opacity: { duration: 0.25 } }
                 }
                 className="overflow-hidden"
               >
                 <motion.p
                   animate={reduced ? undefined : { y: isOpen ? 0 : 8 }}
-                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ duration: 0.3, ease: EASE }}
                   className="pb-6 pr-10 text-sm leading-relaxed text-muted"
                 >
                   {faq.answer}

@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, useReducedMotion } from 'framer-motion'
+import { reveal as sharedReveal } from '@/lib/motion'
 
 // Social proof. NOTHING HERE MAY BE INVENTED: the array below holds a
 // single obvious placeholder so the layout can be reviewed. The section
@@ -51,15 +52,8 @@ export function Testimonials() {
   // No real proof yet means no section. Better an honest gap than filler.
   if (TESTIMONIALS.length === 0) return null
 
-  const reveal = (delay = 0) =>
-    reduced
-      ? {}
-      : {
-          initial: { opacity: 0, y: 22 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, margin: '-60px' },
-          transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] as const },
-        }
+  // Shared page-wide reveal (see lib/motion.ts).
+  const reveal = (delay = 0) => sharedReveal(reduced, { delay })
 
   const single = TESTIMONIALS.length === 1
 

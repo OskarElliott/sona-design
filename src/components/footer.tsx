@@ -103,7 +103,7 @@ export function Footer() {
                 WhatsApp
               </a>
             </p>
-            <p className="mt-1 text-sm text-paper/60">Odpowiadam zwykle tego samego dnia.</p>
+            <p className="mt-1 text-sm text-paper/60">Odpisuję zwykle tego samego dnia.</p>
           </div>
         </div>
 

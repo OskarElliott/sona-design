@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, useReducedMotion } from 'framer-motion'
+import { reveal as sharedReveal } from '@/lib/motion'
 
 // Jak to działa (step 8), MadeByShape-pattern per owner reference: sticky
 // left rail (heading + intro + link), numbered hairline rows right with
@@ -43,15 +44,8 @@ const HOWTO_JSON_LD = {
 export function Process() {
   const reduced = useReducedMotion()
 
-  const reveal = (delay = 0) =>
-    reduced
-      ? {}
-      : {
-          initial: { opacity: 0, y: 22 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, margin: '-60px' },
-          transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] as const },
-        }
+  // Shared page-wide reveal (see lib/motion.ts).
+  const reveal = (delay = 0) => sharedReveal(reduced, { delay })
 
   return (
     <section id="jak-to-dziala" className="dot-grid">
@@ -65,8 +59,8 @@ export function Process() {
             Jak to działa<span className="text-accent">*</span>
           </h2>
           <p className="mt-5 max-w-sm leading-relaxed text-muted">
-            Tworzenie strony internetowej w trzech prostych krokach: od pierwszej rozmowy do
-            strony, która pracuje na Ciebie. Bez zaliczek i bez niespodzianek.
+            Tworzenie strony internetowej w trzech krokach: od pierwszej rozmowy do dnia, w
+            którym strona zaczyna pracować na Ciebie. Bez zaliczek i bez niespodzianek.
           </p>
           <p className="mt-4 text-sm text-muted">
             <span className="text-accent">*</span> Płatność dopiero przy publikacji.
