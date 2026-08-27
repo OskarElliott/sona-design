@@ -12,12 +12,13 @@ import {
 // hero's 4% ghost at full volume. Server component: every animation here
 // is CSS (roll-hover links, underline-draw email, arrow nudges).
 
+// Root-relative so they also work from standalone pages like /polecenia.
 const LINKS = [
-  { href: '#projekty', label: 'Projekty' },
-  { href: '#jak-to-dziala', label: 'Jak to działa' },
-  { href: '#ceny', label: 'Ceny' },
-  { href: '#faq', label: 'Częste pytania' },
-  { href: '#kontakt', label: 'Kontakt' },
+  { href: '/#projekty', label: 'Projekty' },
+  { href: '/#jak-to-dziala', label: 'Jak to działa' },
+  { href: '/#ceny', label: 'Ceny' },
+  { href: '/#faq', label: 'Częste pytania' },
+  { href: '/#kontakt', label: 'Kontakt' },
 ]
 
 const ROLL_EASE = 'ease-[cubic-bezier(0.22,1,0.36,1)]'
@@ -55,7 +56,7 @@ export function Footer() {
               Podoba Ci się to, co widzisz?
             </p>
             <a
-              href="#kontakt"
+              href="/#kontakt"
               className="mt-6 inline-block rounded-pill bg-accent px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 motion-reduce:transition-none"
             >
               Darmowa wycena
@@ -102,7 +103,7 @@ export function Footer() {
                 WhatsApp
               </a>
             </p>
-            <p className="mt-1 text-sm text-paper/60">Odpowiadam zwykle tego samego dnia.</p>
+            <p className="mt-1 text-sm text-paper/60">Odpisuję zwykle tego samego dnia.</p>
           </div>
         </div>
 
@@ -117,10 +118,10 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col gap-3 border-t border-paper/15 pt-6 text-xs text-paper/50 md:flex-row md:items-center md:justify-between">
           <p>
-            © {new Date().getFullYear()} {SITE_NAME} · Strony internetowe · Kraków i cała Polska
+            © {new Date().getFullYear()} {SITE_NAME} · Strony internetowe
           </p>
           <a
-            href="#hero"
+            href="/#hero"
             className="group inline-flex items-center gap-1.5 text-paper/70 transition-colors hover:text-paper motion-reduce:transition-none"
           >
             Zjechałeś za daleko? Wróć na górę

@@ -184,19 +184,21 @@ export function Hero() {
           </span>
         </h1>
 
+        {/* Slimmed to price only: the payment promise now owns the
+            Guarantee block directly below the hero. */}
         <motion.p {...item} className="mt-6 text-sm text-muted">
-          <span className="text-accent">*</span> od 799 PLN, płatność dopiero przy publikacji
+          <span className="text-accent">*</span> od 799 zł, jedna cena, znana przed startem
         </motion.p>
 
         <motion.div {...item} className="mt-9 flex items-center gap-7">
           <a
-            href="#kontakt"
+            href="/#kontakt"
             className="rounded-pill bg-accent px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 motion-reduce:transition-none"
           >
             Darmowa wycena
           </a>
           {/* Underline appears on hover only (owner), drawn left to right. */}
-          <a href="#projekty" className="group relative pb-1 text-sm font-medium">
+          <a href="/#projekty" className="group relative pb-1 text-sm font-medium">
             Zobacz projekty
             <span
               aria-hidden

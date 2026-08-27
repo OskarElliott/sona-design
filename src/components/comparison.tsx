@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, useReducedMotion } from 'framer-motion'
+import { reveal as sharedReveal } from '@/lib/motion'
 
 // Package comparison between the tier cards and the FAQ. The Firma column
 // carries a soft continuous highlight; rows reveal in a stagger on scroll.
@@ -54,15 +55,8 @@ function Cell({ value }: { value: string | boolean }) {
 export function Comparison() {
   const reduced = useReducedMotion()
 
-  const reveal = (delay = 0) =>
-    reduced
-      ? {}
-      : {
-          initial: { opacity: 0, y: 18 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, margin: '-40px' },
-          transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] as const },
-        }
+  // Shared page-wide reveal (see lib/motion.ts).
+  const reveal = (delay = 0) => sharedReveal(reduced, { delay })
 
   return (
     <div className="mx-auto mt-28 max-w-4xl">

@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, useReducedMotion } from 'framer-motion'
+import { reveal as sharedReveal } from '@/lib/motion'
 
 // Jak to działa (step 8), MadeByShape-pattern per owner reference: sticky
 // left rail (heading + intro + link), numbered hairline rows right with
@@ -8,10 +9,13 @@ import { motion, useReducedMotion } from 'framer-motion'
 // promise, same symbol language as the hero. Dot grid lives ONLY here
 // (brief §1). SEO: real <ol> semantics, h2 -> h3 hierarchy, HowTo JSON-LD.
 
-const STEPS = [
+const STEPS: { name: string; text: string; note?: string }[] = [
   {
     name: 'Rozmowa',
     text: 'Krótka rozmowa o Twojej firmie i tym, czego potrzebujesz. Ustalamy zakres, jedną konkretną cenę i termin. Zero zobowiązań.',
+    // The real barrier is not money, it is the belief that a website means
+    // homework. Said plainly, right where the visitor first wonders.
+    note: 'Niczego nie musisz pisać ani zbierać. Biorę to, co już masz w profilu Google i na Facebooku, sam piszę teksty, a Ty je tylko zatwierdzasz.',
   },
   {
     name: 'Projekt',
@@ -40,15 +44,8 @@ const HOWTO_JSON_LD = {
 export function Process() {
   const reduced = useReducedMotion()
 
-  const reveal = (delay = 0) =>
-    reduced
-      ? {}
-      : {
-          initial: { opacity: 0, y: 22 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, margin: '-60px' },
-          transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] as const },
-        }
+  // Shared page-wide reveal (see lib/motion.ts).
+  const reveal = (delay = 0) => sharedReveal(reduced, { delay })
 
   return (
     <section id="jak-to-dziala" className="dot-grid">
@@ -62,14 +59,14 @@ export function Process() {
             Jak to działa<span className="text-accent">*</span>
           </h2>
           <p className="mt-5 max-w-sm leading-relaxed text-muted">
-            Tworzenie strony internetowej w trzech prostych krokach: od pierwszej rozmowy do
-            strony, która pracuje na Ciebie. Bez zaliczek i bez niespodzianek.
+            Tworzenie strony internetowej w trzech krokach: od pierwszej rozmowy do dnia, w
+            którym strona zaczyna pracować na Ciebie. Bez zaliczek i bez niespodzianek.
           </p>
           <p className="mt-4 text-sm text-muted">
             <span className="text-accent">*</span> Płatność dopiero przy publikacji.
           </p>
           <a
-            href="#kontakt"
+            href="/#kontakt"
             className="group relative mt-8 inline-flex items-center gap-1.5 pb-1 text-sm font-medium"
           >
             Darmowa wycena
@@ -127,6 +124,11 @@ export function Process() {
                     {step.name}
                   </h3>
                   <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">{step.text}</p>
+                  {step.note && (
+                    <p className="mt-4 max-w-xl rounded-card border border-line bg-accent-soft/30 px-4 py-3 text-sm leading-relaxed">
+                      {step.note}
+                    </p>
+                  )}
                 </div>
               </div>
             </motion.li>

@@ -4,14 +4,18 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import ScrollStack, { ScrollStackItem } from '@/components/scroll-stack'
+import { EASE, reveal, revealAt } from '@/lib/motion'
 
-// Built for n cards (brief §3.6): add a project here and everything
-// (stack, numbering, filter counts) adapts. image lives in public/projekty,
-// url is the live site (outbound link + honest external-link SEO).
+// One card design, two behaviours. Every project renders the same card
+// (screenshot + Wyzwanie / Efekt framing). With a single project the card
+// simply sits still; from two upward the cards become a scroll-stacked
+// deck, pinning and covering as the visitor scrolls. Adding an entry to
+// PROJECTS is the only change needed to switch modes.
 type Project = {
   name: string
   tagline: string
-  description: string
+  challenge: string
+  result: string
   category: string
   tags: string[]
   image?: string
@@ -23,75 +27,141 @@ const PROJECTS: Project[] = [
   {
     name: 'RafPol Elektric',
     tagline: 'Elektryk i odnawialne źródła energii · Kraków',
-    description:
-      'Strona dla krakowskiej firmy elektroinstalacyjnej z ponad 10-letnim stażem. Porządkuje szeroką ofertę, od instalacji elektrycznych po fotowoltaikę, pompy ciepła i magazyny energii, w jedną przejrzystą całość i prowadzi klienta prosto do kontaktu.',
+    challenge:
+      'Szeroka oferta, od instalacji elektrycznych po fotowoltaikę, pompy ciepła i magazyny energii, trudna do pokazania w przejrzysty sposób.',
+    result:
+      'Jedna czytelna strona, która porządkuje wszystkie usługi i prowadzi klienta prosto do telefonu lub formularza.',
     category: 'Strona firmowa',
     tags: ['Strona firmowa', 'Fotowoltaika', 'SEO lokalne'],
     image: '/projekty/rafpol.png',
-    imageAlt: 'Strona internetowa dla elektryka z Krakowa: RafPol Elektric',
+    imageAlt: 'Strona internetowa dla elektryka: RafPol Elektric',
     url: 'https://www.rafpolelektric.pl/',
   },
-  {
-    name: 'Druga realizacja',
-    tagline: 'Strona dla warsztatu / punktu usługowego',
-    description:
-      'Drugi projekt na start. Tu też wejdzie prawdziwa nazwa, opis efektu i zrzut ekranu z wdrożenia.',
-    category: 'Landing page',
-    tags: ['Landing page', 'Rezerwacje', 'Google Maps'],
-  },
+
+  // ──────────────────────────────────────────────────────────────────────
+  // TODO: drugie case study. Skopiuj obiekt powyżej i uzupełnij:
+  //   name        nazwa firmy klienta
+  //   tagline     branża + miasto (jeśli klient chce być z nim kojarzony)
+  //   challenge   z czym firma miała problem przed stroną
+  //   result      co daje im strona teraz (bez wymyślonych liczb)
+  //   category    np. 'Strona firmowa' / 'Landing page'
+  //   tags        2-3 tagi
+  //   image       zrzut ekranu w public/projekty/nazwa.png (1280px szer.)
+  //   imageAlt    opis zrzutu, np. 'Strona internetowa dla hydraulika: X'
+  //   url         adres opublikowanej strony
+  // Drugi wpis automatycznie włącza filtr i talię przewijanych kart.
+  // Nic więcej nie trzeba zmieniać.
+  // ──────────────────────────────────────────────────────────────────────
 ]
 
 const CATEGORY_COUNT = new Set(PROJECTS.map((p) => p.category)).size
 
 const CARD_CLASSES =
-  'grid overflow-hidden rounded-card-lg border border-line bg-paper shadow-island md:grid-cols-2'
+  'grid overflow-hidden rounded-card-lg border border-line bg-paper shadow-island lg:grid-cols-[1.05fr,1fr]'
 
-// Body face for all small labels (owner: no mono in this section); the
-// numbering row is gone, the ghost number in the media panel carries it.
-function CardInner({ project, index }: { project: Project; index: number }) {
+function ProjectLink({ url, className = '' }: { url: string; className?: string }) {
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`group inline-flex items-center gap-1.5 text-sm font-medium ${className}`}
+    >
+      Zobacz stronę
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+        className="transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
+      >
+        <path d="M7 17 17 7M9 7h8v8" />
+      </svg>
+    </a>
+  )
+}
+
+function ProjectMedia({
+  project,
+  index,
+  sizes,
+  numberClass,
+}: {
+  project: Project
+  index: number
+  sizes: string
+  numberClass: string
+}) {
+  if (project.image) {
+    return (
+      <Image
+        src={project.image}
+        alt={project.imageAlt ?? `Zrzut ekranu strony ${project.name}`}
+        fill
+        sizes={sizes}
+        className="object-cover object-top"
+      />
+    )
+  }
   return (
     <>
-      {/* Screenshot when present, otherwise the placeholder gradient */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-accent-soft/50 md:aspect-auto md:min-h-[24rem]">
-        {project.image ? (
-          <Image
-            src={project.image}
-            alt={project.imageAlt ?? `Zrzut ekranu strony ${project.name}`}
-            fill
-            sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover object-top"
-          />
-        ) : (
-          <>
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  'radial-gradient(110% 110% at 25% 0%, rgb(var(--accent) / 0.16), transparent 55%)',
-              }}
-            />
-            <p className="absolute left-6 top-6 text-xs text-muted">Zrzut ekranu wkrótce</p>
-            <span
-              aria-hidden
-              className="absolute -bottom-6 right-4 font-display text-[9rem] font-black leading-none text-accent/15"
-            >
-              {index + 1}
-            </span>
-          </>
-        )}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(110% 110% at 25% 0%, rgb(var(--accent) / 0.16), transparent 55%)',
+        }}
+      />
+      <span aria-hidden className={numberClass}>
+        {index + 1}
+      </span>
+    </>
+  )
+}
+
+// The card. Identical whether it stands alone or sits in the deck.
+function ProjectCard({ project, index }: { project: Project; index: number }) {
+  return (
+    <>
+      <div className="relative aspect-[16/10] overflow-hidden bg-accent-soft/50 lg:aspect-auto lg:min-h-[30rem]">
+        <ProjectMedia
+          project={project}
+          index={index}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          numberClass="absolute -bottom-6 right-4 font-display text-[9rem] font-black leading-none text-accent/15"
+        />
       </div>
 
-      <div className="flex flex-col justify-center gap-4 p-7 md:p-10">
+      <div className="flex flex-col justify-center gap-5 p-7 md:p-10">
         <p className="flex items-center gap-2 text-sm text-muted">
           <span aria-hidden className="h-1.5 w-1.5 rounded-pill bg-accent" />
           {project.category}
         </p>
-        <h3 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
-          {project.name}
-        </h3>
-        <p className="text-muted">{project.tagline}</p>
-        <p className="text-sm leading-relaxed text-muted">{project.description}</p>
-        <ul className="mt-1 flex flex-wrap gap-2">
+
+        <div>
+          <h3 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
+            {project.name}
+          </h3>
+          <p className="mt-2 text-muted">{project.tagline}</p>
+        </div>
+
+        <div className="flex flex-col gap-4 border-t border-line pt-5">
+          <div>
+            <p className="text-sm font-medium">Wyzwanie</p>
+            <p className="mt-1.5 text-sm leading-relaxed text-muted">{project.challenge}</p>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-accent">Efekt</p>
+            <p className="mt-1.5 text-sm leading-relaxed text-muted">{project.result}</p>
+          </div>
+        </div>
+
+        <ul className="flex flex-wrap gap-2">
           {project.tags.map((t) => (
             <li
               key={t}
@@ -101,45 +171,16 @@ function CardInner({ project, index }: { project: Project; index: number }) {
             </li>
           ))}
         </ul>
-        {project.url ? (
-          <a
-            href={project.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group mt-2 inline-flex items-center gap-1.5 text-sm font-medium"
-          >
-            Zobacz stronę
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-              className="transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
-            >
-              <path d="M7 17 17 7M9 7h8v8" />
-            </svg>
-          </a>
-        ) : (
-          <p className="mt-2 text-xs text-muted">Case study wkrótce</p>
-        )}
+
+        {project.url && <ProjectLink url={project.url} />}
       </div>
     </>
   )
 }
 
-// "kategorie" view (owner picked the adream-list direction): category name
-// top-left, hairline rows of projects (name left, tagline right), rows rest
-// in the same #999a9a as the inactive filter and ink up on hover. The
-// hover preview sits STATIC in a sticky right column (owner request: it
-// must never cover the row text) and crossfades between rows. Touch and
-// reduced-motion get the plain list. Rows become case-study links once
-// case studies exist.
+// ── Kategorie view (available once there are 2+ projects) ───────────────
 function CategoriesView({ showPreview }: { showPreview: boolean }) {
+  const reduced = useReducedMotion()
   const groups = Array.from(
     PROJECTS.reduce((map, project, index) => {
       const list = map.get(project.category) ?? []
@@ -153,10 +194,12 @@ function CategoriesView({ showPreview }: { showPreview: boolean }) {
   const hoveredProject = hovered !== null ? PROJECTS[hovered] : null
 
   return (
-    <div className={showPreview ? 'lg:grid lg:grid-cols-[1.15fr,0.85fr] lg:items-start lg:gap-12' : ''}>
+    <div
+      className={showPreview ? 'lg:grid lg:grid-cols-[1.15fr,0.85fr] lg:items-start lg:gap-12' : ''}
+    >
       <div onMouseLeave={() => setHovered(null)}>
-        {groups.map(([category, items]) => (
-          <div key={category} className="mt-14 first:mt-0">
+        {groups.map(([category, items], gi) => (
+          <motion.div key={category} {...revealAt(reduced, gi)} className="mt-14 first:mt-0">
             <h3 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
               {category}
             </h3>
@@ -175,7 +218,7 @@ function CategoriesView({ showPreview }: { showPreview: boolean }) {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
         ))}
       </div>
 
@@ -186,40 +229,18 @@ function CategoriesView({ showPreview }: { showPreview: boolean }) {
               {hoveredProject && (
                 <motion.div
                   key={hovered}
-                  initial={{ opacity: 0, y: 20, scale: 0.96 }}
+                  initial={{ opacity: 0, y: 16, scale: 0.97 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -12, scale: 0.98 }}
-                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ duration: 0.3, ease: EASE }}
                 >
                   <div className="relative aspect-[16/10] w-full overflow-hidden rounded-card border border-line bg-accent-soft/60 shadow-island">
-                    {hoveredProject.image ? (
-                      <Image
-                        src={hoveredProject.image}
-                        alt={hoveredProject.imageAlt ?? `Zrzut ekranu strony ${hoveredProject.name}`}
-                        fill
-                        sizes="(min-width: 1024px) 40vw, 100vw"
-                        className="object-cover object-top"
-                      />
-                    ) : (
-                      <>
-                        <div
-                          className="absolute inset-0"
-                          style={{
-                            background:
-                              'radial-gradient(110% 110% at 25% 0%, rgb(var(--accent) / 0.16), transparent 55%)',
-                          }}
-                        />
-                        <p className="absolute left-4 top-4 text-xs text-muted">
-                          Zrzut ekranu wkrótce
-                        </p>
-                        <span
-                          aria-hidden
-                          className="absolute -bottom-4 right-2 font-display text-7xl font-black leading-none text-accent/15"
-                        >
-                          {hovered! + 1}
-                        </span>
-                      </>
-                    )}
+                    <ProjectMedia
+                      project={hoveredProject}
+                      index={hovered ?? 0}
+                      sizes="(min-width: 1024px) 40vw, 100vw"
+                      numberClass="absolute -bottom-4 right-2 font-display text-7xl font-black leading-none text-accent/15"
+                    />
                   </div>
                   <p className="mt-4 text-sm text-muted">
                     {hoveredProject.category} · {hoveredProject.name}
@@ -234,11 +255,6 @@ function CategoriesView({ showPreview }: { showPreview: boolean }) {
   )
 }
 
-// "wszystkie / kategorie" header: active is ink, inactive is a fixed light
-// grey (#999a9a per owner spec, readable in both themes; #f7f7f7 would
-// vanish on light paper). Hover previews the active colour. Count sits
-// superscript top-right. "wszystkie" shows the deck, "kategorie" the
-// grouped list view.
 function FilterButton({
   label,
   count,
@@ -269,9 +285,6 @@ export function Projects() {
   const reduced = useReducedMotion()
   const [filter, setFilter] = useState<'wszystkie' | 'kategorie'>('wszystkie')
 
-  // Stack only on md+ viewports; phones get the plain list (no
-  // scroll-jacking on phones, brief §4 — reactbits ships no fallback, so
-  // this gate wraps it). Starts false so SSR and first paint agree.
   const [isDesktop, setIsDesktop] = useState(false)
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 768px)')
@@ -281,32 +294,44 @@ export function Projects() {
     return () => mq.removeEventListener('change', update)
   }, [])
 
-  const stack = isDesktop && !reduced
+  // The deck needs cards to cover each other, so it only switches on from
+  // the second project. Below md and under reduced motion it stays a list.
+  const multiple = PROJECTS.length > 1
+  const deck = multiple && isDesktop && !reduced
 
   return (
     <section id="projekty" className="mx-auto max-w-content px-6 py-24">
-      {/* The design intentionally has no visible heading here (the filter IS
-          the header), so the semantic h2 is screen-reader/crawler only. */}
-      <h2 className="sr-only">Realizacje: strony internetowe dla lokalnych firm</h2>
-      <div className="flex items-start justify-center gap-8 md:gap-12">
-        <FilterButton
-          label="wszystkie"
-          count={PROJECTS.length}
-          active={filter === 'wszystkie'}
-          onClick={() => setFilter('wszystkie')}
-        />
-        <FilterButton
-          label="kategorie"
-          count={CATEGORY_COUNT}
-          active={filter === 'kategorie'}
-          onClick={() => setFilter('kategorie')}
-        />
-      </div>
+      <h2 className="sr-only">Realizacje</h2>
 
-      <div className="mx-auto mt-10 max-w-4xl md:mt-16">
-        {filter === 'kategorie' ? (
-          <CategoriesView showPreview={stack} />
-        ) : stack ? (
+      {multiple ? (
+        <div className="flex items-start justify-center gap-8 md:gap-12">
+          <FilterButton
+            label="wszystkie"
+            count={PROJECTS.length}
+            active={filter === 'wszystkie'}
+            onClick={() => setFilter('wszystkie')}
+          />
+          <FilterButton
+            label="kategorie"
+            count={CATEGORY_COUNT}
+            active={filter === 'kategorie'}
+            onClick={() => setFilter('kategorie')}
+          />
+        </div>
+      ) : (
+        <motion.p
+          {...reveal(reduced)}
+          className="flex items-center justify-center gap-2 text-sm text-muted"
+        >
+          <span aria-hidden className="h-1.5 w-1.5 rounded-pill bg-accent" />
+          Realizacje
+        </motion.p>
+      )}
+
+      <div className="mx-auto mt-10 max-w-5xl md:mt-14">
+        {multiple && filter === 'kategorie' ? (
+          <CategoriesView showPreview={isDesktop && !reduced} />
+        ) : deck ? (
           <ScrollStack
             useWindowScroll
             itemDistance={120}
@@ -318,15 +343,19 @@ export function Projects() {
           >
             {PROJECTS.map((p, i) => (
               <ScrollStackItem key={p.name} itemClassName={CARD_CLASSES}>
-                <CardInner project={p} index={i} />
+                <ProjectCard project={p} index={i} />
               </ScrollStackItem>
             ))}
           </ScrollStack>
         ) : (
           PROJECTS.map((p, i) => (
-            <article key={p.name} className={`${CARD_CLASSES} mt-8 first:mt-0`}>
-              <CardInner project={p} index={i} />
-            </article>
+            <motion.article
+              key={p.name}
+              {...revealAt(reduced, i)}
+              className={`${CARD_CLASSES} mt-8 first:mt-0`}
+            >
+              <ProjectCard project={p} index={i} />
+            </motion.article>
           ))
         )}
       </div>

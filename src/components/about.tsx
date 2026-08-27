@@ -2,24 +2,23 @@
 
 import { useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion'
+import { reveal as sharedReveal } from '@/lib/motion'
 
-// O mnie v2 (owner redraft): no name, no photo, no invented reviews.
-// MadeByShape pattern: a scroll-driven manifesto (each word inks up from
-// faint as the visitor scrolls through it, reactbits ScrollReveal style,
-// built natively on our scroll system) followed by a stat row. The words
-// ARE the section: motion design as the trust signal.
+// O mnie: no name, no photo, no invented reviews. A scroll-driven
+// manifesto where each word inks up as the visitor scrolls through it.
+// The words ARE the section: motion design as the trust signal.
+//
+// The old 1 / 100% / 0 row was rhetoric formatted to look like data, so it
+// was cut rather than dressed up. A stat row returns only when there are
+// real countable facts to put in it (projects shipped, years, response
+// time). The one hard number available today, capacity, lives in the
+// sentence below instead.
 
 // Copy deliberately echoes the H1 ("projektuję strony internetowe",
 // "dzwoni telefon") so the heading's terms exist in body text (SEO audit).
 const SEGMENTS: { text: string; accent?: boolean }[] = [
-  { text: 'Sona to studio jednej osoby. Projektuję strony internetowe, po których dzwoni telefon: projekt, kod i wdrożenie w jednych rękach, bez pośredników i bez tłumaczenia niczego dwa razy. Robię mniej projektów naraz, więc Twój dostaje ' },
+  { text: 'Sona to studio jednej osoby. Projektuję strony internetowe, przez które dzwoni telefon: projekt, kod i wdrożenie w jednych rękach, bez pośredników i bez tłumaczenia tego samego dwa razy. Robię najwyżej trzy projekty w miesiącu, więc Twój dostaje ' },
   { text: 'całą uwagę.', accent: true },
-]
-
-const STATS = [
-  { value: '1', label: 'osoba, z którą rozmawiasz od początku do końca' },
-  { value: '100%', label: 'uwagi dla Twojego projektu, nie dla kolejki zadań' },
-  { value: '0', label: 'pośredników, podwykonawców i niespodzianek' },
 ]
 
 function Word({
@@ -61,15 +60,8 @@ export function About() {
       .map((word) => ({ word, accent: seg.accent }))
   )
 
-  const reveal = (delay = 0) =>
-    reduced
-      ? {}
-      : {
-          initial: { opacity: 0, y: 22 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, margin: '-60px' },
-          transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] as const },
-        }
+  // Shared page-wide reveal (see lib/motion.ts).
+  const reveal = (delay = 0) => sharedReveal(reduced, { delay })
 
   return (
     <section ref={sectionRef} id="o-mnie" className="mx-auto max-w-content px-6 py-28">
@@ -98,16 +90,6 @@ export function About() {
             ))}
       </p>
 
-      <div className="mt-16 grid gap-10 border-t border-line pt-12 sm:grid-cols-3">
-        {STATS.map((stat, i) => (
-          <motion.div key={stat.value} {...reveal(0.1 + i * 0.1)}>
-            <p className="font-display text-5xl font-semibold tracking-tight md:text-6xl">
-              {stat.value}
-            </p>
-            <p className="mt-3 max-w-[16rem] text-sm leading-relaxed text-muted">{stat.label}</p>
-          </motion.div>
-        ))}
-      </div>
     </section>
   )
 }

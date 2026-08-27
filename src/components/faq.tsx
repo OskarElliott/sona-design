@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
+import { EASE, reveal as sharedReveal } from '@/lib/motion'
 
 // FAQ at the bottom of Ceny. Answers stay mounted (height-animated, never
 // unmounted) so the full text ships in the served HTML for crawlers, and
@@ -21,14 +22,14 @@ const FAQS: { question: string; answer: string }[] = [
       'Pakiet Start to zwykle około tygodnia od pierwszej rozmowy. Firma potrzebuje około dwóch tygodni, a przy Premium termin ustalamy wspólnie przed startem.',
   },
   {
-    question: 'Skąd cena od, a nie jedna sztywna?',
+    question: 'Dlaczego cena jest od, a nie sztywna?',
     answer:
       'Bo zakres bywa różny. Po krótkiej rozmowie dostajesz jedną konkretną cenę i ona już się nie zmienia.',
   },
   {
     question: 'Czy strona będzie widoczna w Google?',
     answer:
-      'Tak. Każda strona ma SEO lokalne: opisy usług, dane firmy, mapę i szybkie ładowanie. To fundament, dzięki któremu znajdą Cię klienci z okolicy.',
+      'Tak. Każda strona ma SEO lokalne: opisy usług, dane firmy, mapę i szybkie ładowanie. To fundament, dzięki któremu znajdą Cię klienci, którzy szukają takich usług jak Twoje.',
   },
   {
     question: 'Czy pomagasz z domeną i hostingiem?',
@@ -36,29 +37,37 @@ const FAQS: { question: string; answer: string }[] = [
       'Tak, biorę na siebie całą techniczną stronę: domenę, hosting i pocztę firmową. Ty zajmujesz się swoją robotą.',
   },
   {
-    question: 'Co jeśli po publikacji będę chciał coś zmienić?',
+    question: 'Co, jeśli po publikacji będę chciał coś zmienić?',
     answer:
       'Każdy pakiet ma okres darmowych poprawek po publikacji: od dwóch tygodni w Starcie do dwóch miesięcy w Premium. Później możesz zlecać zmiany pojedynczo albo wykupić stałą opiekę.',
   },
   {
     question: 'Ile kosztuje strona internetowa dla małej firmy?',
     answer:
-      'U mnie od 799 zł za stronę wizytówkę do 4 podstron, od 1099 zł za stronę firmową i od 1999 zł za rozbudowany serwis. Dla porównania: agencje w Krakowie liczą za prostą stronę zwykle od 1500 do 3500 zł, często bez podania ceny z góry. U mnie cena jest stała i znasz ją przed startem.',
+      'U mnie od 799 zł za stronę wizytówkę, od 1099 zł za stronę firmową i od 1999 zł za rozbudowany serwis. Ostateczna cena zależy od zakresu: liczby podstron, treści do przygotowania i funkcji, takich jak rezerwacje czy płatności. Przed startem znasz jedną konkretną cenę i ona już się nie zmienia.',
   },
   {
     question: 'Czy robisz strony dla konkretnych branż, na przykład dla hydraulika albo elektryka?',
     answer:
-      'Tak, to moja specjalność: strony internetowe dla fachowców i lokalnych usług, między innymi dla hydraulików, elektryków i warsztatów samochodowych. Zbudowałem na przykład stronę dla krakowskiej firmy elektroinstalacyjnej RafPol Elektric. Znam ten rynek, więc wiem, czego szukają Twoi klienci.',
+      'Tak, to moja specjalność: strony internetowe dla fachowców i firm usługowych, między innymi dla hydraulików, elektryków i warsztatów samochodowych. Zbudowałem na przykład stronę dla firmy elektroinstalacyjnej RafPol Elektric. Znam ten rynek, więc wiem, czego szukają Twoi klienci.',
   },
   {
     question: 'Strona internetowa czy wizytówka Google? Co jest ważniejsze?',
     answer:
-      'Jedno i drugie, bo robią różne rzeczy. Wizytówka Google łapie klientów z mapy i lokalnych wyników, a strona internetowa zamienia ich w zapytania i telefony. Dlatego każdą stronę od razu łączę z profilem firmy w Google, żeby oba kanały pracowały razem.',
+      'Jedno i drugie, bo robią różne rzeczy. Wizytówka pokazuje Twoją firmę w Google i na mapie, a strona zamienia odwiedzających w zapytania i telefony. Dlatego każdą stronę od razu łączę z profilem firmy w Google, żeby oba kanały pracowały razem.',
   },
   {
-    question: 'Czy robisz strony tylko dla firm z Krakowa?',
+    question: 'Co, jeśli gotowa strona mi się nie spodoba?',
     answer:
-      'Nie, pracuję w pełni zdalnie dla firm z całej Polski. Kraków to moja baza, więc tu najłatwiej o spotkanie na żywo, ale cały proces, od rozmowy po publikację, działa tak samo dobrze online, przez telefon i WhatsApp.',
+      'Nic nie tracisz. Płacisz dopiero przy publikacji, więc jeśli efekt Ci nie odpowiada, po prostu rezygnujesz. Zanim do tego dojdzie, pokazuję Ci postępy i nanoszę poprawki, więc zwykle dochodzimy do wersji, którą chcesz pokazać światu.',
+  },
+  {
+    // The one place a location may appear: a light organic signal that ties
+    // the site to the Google Business Profile. Framed so that location is
+    // explicitly not a variable for the client.
+    question: 'Jak wygląda współpraca na odległość?',
+    answer:
+      'Cały proces działa online: rozmowa przez telefon albo WhatsApp, projekt do obejrzenia w przeglądarce, poprawki na bieżąco. Na co dzień pracuję z Krakowa, ale dla współpracy nie ma to żadnego znaczenia.',
   },
 ]
 
@@ -76,14 +85,8 @@ export function Faq() {
   const reduced = useReducedMotion()
   const [open, setOpen] = useState<number | null>(null)
 
-  const reveal = reduced
-    ? {}
-    : {
-        initial: { opacity: 0, y: 18 },
-        whileInView: { opacity: 1, y: 0 },
-        viewport: { once: true, margin: '-40px' },
-        transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const },
-      }
+  // Shared page-wide reveal (see lib/motion.ts).
+  const reveal = sharedReveal(reduced)
 
   return (
     <div id="faq" className="mx-auto mt-28 max-w-2xl">
@@ -123,7 +126,7 @@ export function Faq() {
                   aria-hidden
                   className="shrink-0 text-muted"
                   animate={{ rotate: isOpen ? 45 : 0 }}
-                  transition={reduced ? { duration: 0 } : { duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  transition={reduced ? { duration: 0 } : { duration: 0.3, ease: EASE }}
                 >
                   <path d="M12 5v14M5 12h14" />
                 </motion.svg>
@@ -136,13 +139,13 @@ export function Faq() {
                 transition={
                   reduced
                     ? { duration: 0 }
-                    : { height: { duration: 0.35, ease: [0.22, 1, 0.36, 1] }, opacity: { duration: 0.25 } }
+                    : { height: { duration: 0.35, ease: EASE }, opacity: { duration: 0.25 } }
                 }
                 className="overflow-hidden"
               >
                 <motion.p
                   animate={reduced ? undefined : { y: isOpen ? 0 : 8 }}
-                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ duration: 0.3, ease: EASE }}
                   className="pb-6 pr-10 text-sm leading-relaxed text-muted"
                 >
                   {faq.answer}
