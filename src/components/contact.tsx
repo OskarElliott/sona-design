@@ -111,7 +111,7 @@ export function Contact() {
             Pogadajmy o Twojej stronie
           </h2>
           <p className="mt-5 max-w-md leading-relaxed text-muted">
-            Opisz krótko swoją firmę i czego potrzebujesz. Odpowiadam zwykle tego samego dnia,
+            Opisz krótko swoją firmę i to, czego potrzebujesz. Odpowiadam zwykle tego samego dnia,
             z konkretną ceną i terminem.
           </p>
 

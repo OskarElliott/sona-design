@@ -32,7 +32,7 @@ const HOWTO_JSON_LD = {
   '@type': 'HowTo',
   name: 'Jak powstaje strona internetowa w Sona',
   description:
-    'Trzy kroki od pierwszej rozmowy do opublikowanej strony internetowej, z płatnością dopiero przy publikacji.',
+    'Trzy kroki od pierwszej rozmowy do opublikowanej strony internetowej. Płatność dopiero przy publikacji.',
   step: STEPS.map((s, i) => ({
     '@type': 'HowToStep',
     position: i + 1,

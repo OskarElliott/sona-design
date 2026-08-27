@@ -35,7 +35,7 @@ export default function Polecenia() {
             tę stronę. Kiedy z Twojego polecenia dojdzie do współpracy i strona zostanie
             opublikowana, dostajesz ode mnie{' '}
             <span className="font-medium text-ink">
-              {REFERRAL_REWARD ?? 'ustaloną nagrodę'}
+              {REFERRAL_REWARD ?? 'nagrodę, którą ustalimy wcześniej'}
             </span>
             . Bez haczyków i bez limitu poleceń.
           </p>

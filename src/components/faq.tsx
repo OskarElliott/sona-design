@@ -19,10 +19,10 @@ const FAQS: { question: string; answer: string }[] = [
   {
     question: 'Ile trwa zrobienie strony?',
     answer:
-      'Pakiet Start to zwykle około tygodnia od pierwszej rozmowy. Firma potrzebuje około dwóch tygodni, a przy Premium termin ustalamy wspólnie przed startem.',
+      'Pakiet Start to zwykle około tygodnia od pierwszej rozmowy. Pakiet Firma potrzebuje około dwóch tygodni, a przy Premium termin ustalamy wspólnie przed startem.',
   },
   {
-    question: 'Dlaczego cena jest od, a nie sztywna?',
+    question: 'Dlaczego cena jest „od”, a nie sztywna?',
     answer:
       'Bo zakres bywa różny. Po krótkiej rozmowie dostajesz jedną konkretną cenę i ona już się nie zmienia.',
   },
@@ -34,12 +34,12 @@ const FAQS: { question: string; answer: string }[] = [
   {
     question: 'Czy pomagasz z domeną i hostingiem?',
     answer:
-      'Tak, biorę na siebie całą techniczną stronę: domenę, hosting i pocztę firmową. Ty zajmujesz się swoją robotą.',
+      'Tak, biorę na siebie całą część techniczną: domenę, hosting i pocztę firmową. Ty zajmujesz się swoją robotą.',
   },
   {
     question: 'Co, jeśli po publikacji będę chciał coś zmienić?',
     answer:
-      'Każdy pakiet ma okres darmowych poprawek po publikacji: od dwóch tygodni w Starcie do dwóch miesięcy w Premium. Później możesz zlecać zmiany pojedynczo albo wykupić stałą opiekę.',
+      'W każdym pakiecie masz darmowe poprawki po publikacji: od dwóch tygodni w Starcie do dwóch miesięcy w Premium. Później możesz zlecać zmiany pojedynczo albo wykupić stałą opiekę.',
   },
   {
     question: 'Ile kosztuje strona internetowa dla małej firmy?',

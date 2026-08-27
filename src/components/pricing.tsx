@@ -92,7 +92,7 @@ export function Pricing() {
           dopiero przy publikacji.
         </p>
         <p className="mt-3 text-sm text-muted">
-          Prowadzę maksymalnie trzy projekty w miesiącu, żeby każdy dostał pełną uwagę.
+          Prowadzę najwyżej trzy projekty w miesiącu, żeby każdy dostał pełną uwagę.
         </p>
       </motion.div>
 
